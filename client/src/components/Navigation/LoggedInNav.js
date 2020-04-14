@@ -1,0 +1,19 @@
+import React from 'react'
+import UserDropdown from "../UserDropdown/UserDropdown"
+
+const LoggedInNav = (props) => {
+
+    const toggleMenu = () => {
+        props.toggleMenu(!props.dropdownOpen);
+    }
+
+    const logout = () => {
+        props.logout()
+    }
+
+    return(  
+        <UserDropdown onClick={toggleMenu} open={props.dropdownOpen} logout={logout} user={props.user}/>
+    )
+}
+
+export default LoggedInNav;
