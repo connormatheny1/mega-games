@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import queryString from 'query-string'
 import io from 'socket.io-client'
+import Chat from "./Chat/Chat"
 import {
     Icon,
     H3,
@@ -19,11 +20,12 @@ const CrazyMain = props => {
     const [room, setRoom] = useState('')
     const [users, setUsers] = useState()
     const [message, setMessage] = useState('')
-    const [messages, setMessages] = useState([])
+    const [messages, setMessages] = useState()
     const [playerListOpen, setPlayerListOpen] = useState(true)
     const [playerListIcon, setPlayerListIcon] = useState('double-chevron-left')
     const [numUsers, setNumUsers] = useState(0);
     const [roomCreator, setRoomCreator] = useState('');
+    const [socketId, setSocketId] = useState('')
     const ENDPOINT = 'localhost:5000/crazy/rooms'
     
     useEffect(() => {
@@ -38,6 +40,7 @@ const CrazyMain = props => {
             }
           });
 
+
         return () => {
             socket.emit('disconnect')
             socket.off();
@@ -45,13 +48,18 @@ const CrazyMain = props => {
     }, [ENDPOINT, props.location.search])
 
     useEffect(() => {
-        socket.on('roomData', ({users}) => {
+        socket.on('roomData', ({users, socket_id}) => {
             setUsers(users)
             setNumUsers(users.length)
-            const creatorIndex = users.findIndex((u) => u.creator === true)
-            setRoomCreator(users[creatorIndex].username || username)
+            let creatorIndex = users.findIndex((u) => u.creator === true)
+            console.log(creatorIndex)
+            if(creatorIndex != -1) {
+                setRoomCreator(users[creatorIndex].username)
+            }
+            setSocketId(socket_id)
+            setUserSocketId(socket_id)
         })
-    }, [users])
+    }, [users, roomCreator])
 
     const playerListToggle = () => {
         setPlayerListOpen(!playerListOpen)
@@ -61,6 +69,15 @@ const CrazyMain = props => {
         else{
             setPlayerListIcon('double-chevron-left')
         }
+    }
+
+    const setUserSocketId = (s) => {
+        props.setUserSocketId(s)
+    }
+
+    const sendMessage = (m) => {
+        setMessage(m)
+        setMessages(...messages, m)
     }
 
     const dialogHeader = () => (
@@ -76,6 +93,8 @@ const CrazyMain = props => {
         </div> 
     )
 
+    console.log(message, messages)
+
     return(
             <div className="gameCont">
                 <div className="roomInfoHeader">
@@ -83,14 +102,14 @@ const CrazyMain = props => {
                         <H3><span style={{fontWeight: "normal"}}>{room}</span></H3>
                     </div>
                     <div className="right">
-                        <span><Icon icon="new-person"/>Created by:&nbsp;<b>{roomCreator}</b></span>
-                        <span>
+                        <span><Icon icon="new-person"/>Created by:&nbsp;<b>{roomCreator ? roomCreator : ( users ? users[0].username : props.user.username )}</b></span>
+                        {/* <span>
                             <Icon icon="time"/> Room created:&nbsp;
                             <b>
                                 Dates
-                                {/* {new Date(info.rows.created_at).toDateString()}, {new Date(info.rows.created_at).toLocaleTimeString('en-US')} */}
+                                {new Date(info.rows.created_at).toDateString()}, {new Date(info.rows.created_at).toLocaleTimeString('en-US')}
                             </b>
-                        </span>
+                        </span> */}
                     </div>
                 </div>
                 <div className="gameBody">
@@ -109,7 +128,10 @@ const CrazyMain = props => {
                             canOutsideClickClose={false}
                             canEscapeKeyClose={false}
                         >
-                            <PlayerList users={users} user={props.user}/>
+                            <div className="fc-sb-c">
+                                <PlayerList users={users} user={props.user}/>
+                                <Chat location={props.location} emitSendMessage={sendMessage} messages={messages} />
+                            </div>
                         </Drawer>
                         <Button icon={playerListIcon} minimal="true" onClick={playerListToggle} className="drawer-button" style={ playerListOpen ? {left: '238px'} : {left: '0px'}}/>
                     </div>

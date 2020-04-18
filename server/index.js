@@ -3,7 +3,8 @@ const express = require('express')
 const socketio = require("socket.io")
 const http = require('http')
 const bodyParser = require('body-parser')
-const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users')
+const { addUser, removeUser, getUser, getUsersInRoom, getActiveRooms } = require('./utils/users')
+const { addUserChat, removeUserChat, getUserChat, getUsersInRoomChat, getActiveRoomsChat } = require('./utils/chat')
 
 const PORT = process.env.PORT || 5000
 
@@ -29,29 +30,27 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
         console.log(getUsersInRoom(user.room))
         console.log("rooms: " + io.sockets.adapter.rooms)
 
+        const availableRooms = getActiveRooms(io.sockets.adapter.rooms);
         
-            var availableRooms = [];
-            var rooms = io.sockets.adapter.rooms;
-            if (rooms) {
-                for (var room in rooms) {
-                    if (!rooms[room].hasOwnProperty(room)) {
-                        availableRooms.push(room);
-                    }
-                }
-            }
-             console.log(availableRooms);
-        
-
-        socket.emit('roomData', { room: user.room, users: getUsersInRoom(user.room), rooms: availableRooms })
-        socket.broadcast.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room),  rooms: availableRooms })
+        socket.emit('roomData', { room: user.room, users: getUsersInRoom(user.room), rooms: availableRooms, socket_id: socket.id })
+        socket.broadcast.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room),  rooms: availableRooms, socket_id: socket.id })
 
         callback()
     })
 
+    socket.on('joined-chat', ({username, room }, callback) => {
+        const { error, user }= addUserChat({ id: socket.id, username, room })
+        if(error) return callback(error)
+        console.log("chat socket: " + socket)
+
+        socket.join(user.room)
+        socket.emit('chatRoomData', { room: user.room, users: getUsersInRoomChat(user.room) })
+    })
+
     socket.on('sendMessage', (message, callback) => {
-        const user = getUser(socket.id)
+        const user = getUserChat(socket.id)
         io.to(user.room).emit('message', { user: user.username, text: message })
-        io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) })
+        socket.to(user.room).emit('chatRoomData', { room: user.room, users: getUsersInRoomChat(user.room) })
         callback()
     })
 

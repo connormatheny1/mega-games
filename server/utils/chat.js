@@ -1,6 +1,6 @@
 const users = []
 
-const addUser = ({ id, username, room }) => {
+const addUserChat = ({ id, username, room }) => {
     username = username.replace(/\s/g, "").toLowerCase()
     room = room.replace(/\s/g, "").toLowerCase()
     console.log(room)
@@ -8,7 +8,7 @@ const addUser = ({ id, username, room }) => {
     const existingUser = users.find((user) => user.room === room && user.username === username)
 
     if(existingUser){
-        return { error: 'Username taken'}
+        console.log('existing user err')
     }
 
     if(users.length < 1){
@@ -23,7 +23,7 @@ const addUser = ({ id, username, room }) => {
     return { user }
 }
 
-const removeUser = (id) => {
+const removeUserChat = (id) => {
     const index = users.findIndex((user) => user.id === id)
 
     if(index !== -1){
@@ -31,7 +31,7 @@ const removeUser = (id) => {
     }
 }
 
-const getActiveRooms = (data) => {
+const getActiveRoomsChat = (data) => {
     const availableRooms = [];
     const rooms = data;
     if (rooms) {
@@ -44,8 +44,8 @@ const getActiveRooms = (data) => {
     return availableRooms;
 }
 
-const getUser = (id) => users.find((user) => user.id === id)
+const getUserChat = (id) => users.find((user) => user.id === id)
 
-const getUsersInRoom = (room) => users.filter((user) => user.room === room)
+const getUsersInRoomChat = (room) => users.filter((user) => user.room === room)
 
-module.exports = { addUser, removeUser, getUser, getUsersInRoom, getActiveRooms }
+module.exports = { addUserChat, removeUserChat, getUserChat, getUsersInRoomChat, getActiveRoomsChat }
