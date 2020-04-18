@@ -33,7 +33,6 @@ const CreateRoom = props => {
     const [formIntent, setFormIntent] = useState(Intent.PRIMARY)
     const [showErrorText, setShowErrorText] = useState(false)
     const [errorHelperText, setErrorHelperText] = useState("All fields are needed")
-    const [idk, setIdk] = useState("idk man")
     const [user, setUser] = useState(props.user)
 
     const setUsernameAsDisplayName = () => {
