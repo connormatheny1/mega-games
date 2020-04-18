@@ -23,7 +23,7 @@ const CrazyMain = props => {
     const [playerListOpen, setPlayerListOpen] = useState(true)
     const [playerListIcon, setPlayerListIcon] = useState('double-chevron-left')
     const [numUsers, setNumUsers] = useState(0);
-    const [roomCreator, setRoomCreator] = useState('')
+    const [roomCreator, setRoomCreator] = useState('');
     const ENDPOINT = 'localhost:5000/crazy/rooms'
     
     useEffect(() => {
@@ -49,7 +49,7 @@ const CrazyMain = props => {
             setUsers(users)
             setNumUsers(users.length)
             const creatorIndex = users.findIndex((u) => u.creator === true)
-            setRoomCreator(users[creatorIndex].username)
+            setRoomCreator(users[creatorIndex].username || username)
         })
     }, [users])
 

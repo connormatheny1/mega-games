@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react"
 import CreateRoom from './CreateRoom'
 
-const Rooms = ( props ) => {
-    const [name, setName] = useState('')
-    const [room, setRoom] = useState('')
-
-    
+const Rooms = ( props ) => { 
     const updateUserRoom = (res) => {
         props.updateUserRoom(res)
     }

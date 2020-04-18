@@ -27,9 +27,23 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
 
         socket.join(user.room)
         console.log(getUsersInRoom(user.room))
+        console.log("rooms: " + io.sockets.adapter.rooms)
 
-        socket.emit('roomData', { room: user.room, users: getUsersInRoom(user.room) })
-        socket.broadcast.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) })
+        
+            var availableRooms = [];
+            var rooms = io.sockets.adapter.rooms;
+            if (rooms) {
+                for (var room in rooms) {
+                    if (!rooms[room].hasOwnProperty(room)) {
+                        availableRooms.push(room);
+                    }
+                }
+            }
+             console.log(availableRooms);
+        
+
+        socket.emit('roomData', { room: user.room, users: getUsersInRoom(user.room), rooms: availableRooms })
+        socket.broadcast.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room),  rooms: availableRooms })
 
         callback()
     })
