@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import queryString from 'query-string'
 import io from 'socket.io-client'
 import Input from "../../Input/Input"
@@ -51,21 +51,21 @@ const Chat = (props) => {
     //     }
     // }
 
-    const sendMessage = (m) => {
-        m.preventDefault();
+    const sendMessage = (e) => {
+        e.preventDefault()
         if(message){
-            props.emitSendMessage(message)
+            console.log(message)
+            //setMessages([...messages, message])
+            props.emitSendMessage(e, message)
+            setMessage('')
         }
     }
 
 
-    console.log(message, messages)
-    console.log(props.socket)
-
     return(
         <div className="outerContainer">
             <div className="container">
-                <Messages messages={props.messages} username={username} />
+                <Messages messages={props.messages} username={props.username} emojis={props.emojis}/>
                 <Input message={message} setMessage={setMessage} sendMessage={sendMessage}/>
             </div>
         </div>

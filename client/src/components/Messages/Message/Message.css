@@ -1,18 +1,52 @@
 .messageBox {
-    background: #F3F3F3;
+    background: #8A9BA8;
     border-radius: 20px;
-    padding: 5px 20px;
+    padding: 5px 13px;
     color: white;
     display: inline-block;
     max-width: 80%;
+    position: relative;
+    z-index: 5;
   }
+
+  .messageBox.before:after{
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-right-color: #EBF1F5;
+    border-left: 0;
+    border-top: 0;
+    margin-top: -4px;
+    margin-left: -7px;
+  }
+
+  .messageBox.after:after{
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-left-color: #2979FF;
+    border-right: 0;
+    border-top: 0;
+    margin-top: -4px;
+    margin-right: -7px;
+  }
+
   
   .messageText {
     width: 100%;
     letter-spacing: 0;
     float: left;
-    font-size: 1.1em;
+    font-size: 1em;
     word-wrap: break-word;
+    margin: 0;
   }
   
   .messageText img {
@@ -21,9 +55,14 @@
   
   .messageContainer {
     display: flex;
+    flex-direction: column;
     justify-content: flex-end;
-    padding: 0 5%;
-    margin-top: 3px;
+    padding: 0 6%;
+    margin-top: 2px;
+  }
+
+  p{
+    margin: 0;
   }
   
   .sentText {
@@ -37,6 +76,10 @@
   .pl-10 {
     padding-left: 10px;
   }
+
+  .pl-5 {
+    padding-left: 0px;
+  }
   
   .pr-10 {
     padding-right: 10px;
@@ -48,6 +91,7 @@
   
   .justifyEnd {
     justify-content: flex-end;
+    align-items: flex-end;
   }
   
   .colorWhite {
@@ -63,5 +107,5 @@
   }
   
   .backgroundLight {
-    background: #F3F3F3;
+    background: #EBF1F5;
   }

@@ -4,7 +4,6 @@ const socketio = require("socket.io")
 const http = require('http')
 const bodyParser = require('body-parser')
 const { addUser, removeUser, getUser, getUsersInRoom, getActiveRooms } = require('./utils/users')
-const { addUserChat, removeUserChat, getUserChat, getUsersInRoomChat, getActiveRoomsChat } = require('./utils/chat')
 
 const PORT = process.env.PORT || 5000
 
@@ -38,26 +37,33 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
         callback()
     })
 
-    socket.on('joined-chat', ({username, room }, callback) => {
-        const { error, user }= addUserChat({ id: socket.id, username, room })
-        if(error) return callback(error)
-        console.log("chat socket: " + socket)
-
-        socket.join(user.room)
-        socket.emit('chatRoomData', { room: user.room, users: getUsersInRoomChat(user.room) })
+    socket.on('sendMessage', (message, callback) => {
+        console.log(message)
+        const user = getUser(socket.id)
+        console.log(user)
+        socket.emit('message', { user: user.username, text: message })
+        socket.broadcast.to(user.room).emit('message', { user: user.username, text: message })
+        socket.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) })
+        callback()
     })
 
-    socket.on('sendMessage', (message, callback) => {
-        const user = getUserChat(socket.id)
-        io.to(user.room).emit('message', { user: user.username, text: message })
-        socket.to(user.room).emit('chatRoomData', { room: user.room, users: getUsersInRoomChat(user.room) })
+    socket.on('game-started', (data, callback) => {
+        const user = getUser(socket.id)
+        socket.emit('start-game', {gameStarted: true})
+        socket.broadcast.to(user.room).emit('start-game', {gameStarted: true})
+    })
+
+    socket.on('bad-path', (qs, callback) => {
+        console.log(qs)
+        const user = getUser(socket.id)
+        io.to(user.room).emit('bad-path-ui', {user, error: `Bad path error, no query string location to parse, redirecting...`})
         callback()
     })
 
     socket.on('disconnect', () => {
         const user = removeUser(socket.id)
         if(user){
-            io.to(user.room).emit('message', { user: 'admin', text: `${user.username} has left`})
+            socket.to(user.room).emit('message', { user: 'admin', text: `${user.username} has left`})
             console.log(`${user.username} has left`)
         }
     })
