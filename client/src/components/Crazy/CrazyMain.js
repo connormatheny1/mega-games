@@ -200,7 +200,7 @@ const CrazyMain = props => {
                 <div className="playerListCont">
                     <Drawer {...drawerProps}>
                         <div className="fc-sb-c h-100 w-100">
-                            <PlayerList users={users} user={props.user}/>
+                            <PlayerList users={users} user={props.user} room={room}/>
                             <div className="chat-container">
                                 <Paper className="f-sb-c w-100 chat-head" elevation={2}>
                                     <H4>Chat</H4>

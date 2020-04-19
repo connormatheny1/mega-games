@@ -6,12 +6,13 @@ import {
 } from "@blueprintjs/core"
 
 
-const PlayerList = ({users, user}) => {
+const PlayerList = ({ users, user, room }) => {
     const [username, setUsername] = useState('')
-    const [room, setRoom] = useState('')
+    //const [room, setRoom] = useState('')
     const [numUsers, setNumUsers] = useState()
     const [disabledJoin, setDisabledJoin] = useState()
     const [userList, setUserList] = useState()
+    const [readyPlayers, setReadyPlayers] = useState([])
     const [btnStateStyle, setBtnStateStyle] = useState({
         boxShadow: '-5px -5px 20px #fff,  5px 5px 20px #BABECC',
     })
@@ -46,11 +47,38 @@ const PlayerList = ({users, user}) => {
         setBtnStateStyle({
             boxShadow: '-5px -5px 20px #fff,  5px 5px 20px #BABECC',
         })
+
+        addReadyPlayer(user.username, room)        
     }
 
     useEffect(() => {
         setUserList(users)
     }, [userList])
+
+    useEffect(() => {
+        setReadyPlayers([...readyPlayers, user])
+        console.log(readyPlayers)
+    }, [])
+
+    const addReadyPlayer = ({ username, room }) => {
+        let u;
+        const existingUser = readyPlayers.find((user) => user.room === room && user.username === username)
+
+        if(existingUser){
+            return { error: 'already ready'}
+        }
+
+        if(users.length < 1){
+            u = { username, room, creator: true }
+            setReadyPlayers([...readyPlayers, u])
+        }
+        else{
+            u = { username, room, creator: false }
+            setReadyPlayers([...readyPlayers, u])
+        }
+
+        console.log(readyPlayers)
+    }
 
 
     return(
