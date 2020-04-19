@@ -25,7 +25,7 @@ const Game = (props) => {
 
                     </div>
                 ) : (
-                    props.numUsers > 1 ? (
+                    props.numUsers === props.readyPlayers.length ? (
                         <Button
                             text="Start a game"
                             icon="tick"

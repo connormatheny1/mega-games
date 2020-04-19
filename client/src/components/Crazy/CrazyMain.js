@@ -39,7 +39,8 @@ const CrazyMain = props => {
     const [chatIcon, setChatIcon] = useState(true)
     const [msgCount, setMsgCount] = useState(0)
     const [emojis, setEmojis] = useState(false)
-    const [gameStarted, setGameStarted] = useState(false)
+    const [gameStarted, setGameStarted] = useState(false)    
+    const [readyPlayers, setReadyPlayers] = useState([])    
     const ENDPOINT = 'localhost:5000/crazy/rooms'
     
     useEffect(() => {
@@ -76,7 +77,6 @@ const CrazyMain = props => {
             setUsers(users)
             setNumUsers(users.length)
             let creatorIndex = users.findIndex((u) => u.creator === true)
-            console.log(creatorIndex)
             if(creatorIndex != -1) {
                 setRoomCreator(users[creatorIndex].username)
             }
@@ -117,17 +117,41 @@ const CrazyMain = props => {
 
     const startGame = (e) => {
         e.preventDefault()
-        socket.emit('game-started', { user: props.user, users, room, numUsers }, () => setGameStarted(false))
+        socket.emit('game-started', { user: props.user, users, room, numUsers }, () => setGameStarted(false))//errors may happen with callback here
     }
 
     useEffect(() => {
         socket.on('start-game', (data) => {
             setGameStarted(data.gameStarted)
-            console.log(data)
         })
     }, [gameStarted])
 
+    const updateReadyPlayers = (u, r, rp) => {
+        setReadyPlayers([...readyPlayers, u])
+        emitReady(u, r)
+    }
 
+    const emitReady = (u, r) => {
+        socket.emit('player-ready', u, r, readyPlayers, () => {
+            const index = readyPlayers.findIndex((user) => user.username === u.username)
+            if(index !== -1){
+                if(users[index].ready){
+                    props.setReady(false)
+                }
+                setReadyPlayers(readyPlayers.filter(a => a.username !== readyPlayers[index].username))
+            }
+        })
+    }
+
+    useEffect(() => {
+        socket.on('ready-up', ({user}) => {
+            const existing = readyPlayers.find((u) => u.username === user.username)
+            if(existing){
+                return
+            }
+            setReadyPlayers([...readyPlayers, user])
+        })
+    }, [readyPlayers])
 
     
 
@@ -160,6 +184,10 @@ const CrazyMain = props => {
 
     const cogToggle = () => {
         setEmojis(!emojis)
+    }
+
+    const setReady = (v) => {
+        props.setReady(v)
     }
 
     const drawerProps = {
@@ -200,7 +228,7 @@ const CrazyMain = props => {
                 <div className="playerListCont">
                     <Drawer {...drawerProps}>
                         <div className="fc-sb-c h-100 w-100">
-                            <PlayerList users={users} user={props.user} room={room}/>
+                            <PlayerList users={users} readyPlayers={readyPlayers} user={props.user} room={room} updateReadyPlayers={updateReadyPlayers} setReady={setReady}/>
                             <div className="chat-container">
                                 <Paper className="f-sb-c w-100 chat-head" elevation={2}>
                                     <H4>Chat</H4>
@@ -236,7 +264,7 @@ const CrazyMain = props => {
                     <Button icon={playerListIcon ? "double-chevron-left" : "double-chevron-right"} minimal="true" onClick={playerListToggle} className="drawer-button" style={ playerListOpen ? {left: '238px'} : {left: '0px'}}/>
                 </div>
                 <Paper elevation={4} className="gameboard-container h-100" style={playerListOpen ? {width: 'calc(100% - 260px'} : {width: '100%'}}>
-                    <Game numUsers={numUsers} startGame={startGame} gameStarted={gameStarted}/>
+                    <Game numUsers={numUsers} startGame={startGame} gameStarted={gameStarted} readyPlayers={readyPlayers}/>
                 </Paper>
             </div>
         </div>

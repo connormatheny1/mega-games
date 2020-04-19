@@ -41,7 +41,8 @@ const App = () => {
         uid: null,
         current_room: null,
         roomCreator: false,
-        socket_id: null
+        socket_id: null,
+        ready: false
     });
 
     const [loginModal, toggleLoginModal] = useState(false)
@@ -61,7 +62,6 @@ const App = () => {
     }
 
     const userAuthed = (res) => {
-    console.log(res);
         if(res.data.auth){
             setUser({
                 username: res.data.rows.username,
@@ -73,7 +73,8 @@ const App = () => {
                 current_room: res.data.rows.room_id,
                 uid: res.data.rows.uid,
                 roomCreator: false,
-                socket_id: null
+                socket_id: null,
+                ready: false
             })
         }
     }
@@ -119,7 +120,13 @@ const App = () => {
             ...prevState,
             socket_id: s
         }))
-        console.log(s, user.socket_id)
+    }
+
+    const setReady = (v) => {
+        setUser(prevState => ({
+            ...prevState,
+            ready: v
+        }))
     }
 
     return(
@@ -134,7 +141,7 @@ const App = () => {
                 />
                 <Route path="/crazy/rooms" 
                     render={
-                        (props) => <CrazyMain {...props} user={user} updateUserRoom={updateUserRoom}  setUserSocketId={setUserSocketId}/>
+                        (props) => <CrazyMain {...props} user={user} updateUserRoom={updateUserRoom}  setUserSocketId={setUserSocketId} setReady={setReady} />
                     }
                 />
                  {/* <Route path="/settings" component={UserSettings} /> */}

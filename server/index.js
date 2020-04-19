@@ -51,6 +51,15 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
         const user = getUser(socket.id)
         socket.emit('start-game', {gameStarted: true})
         socket.broadcast.to(user.room).emit('start-game', {gameStarted: true})
+        callback()
+    })
+
+    socket.on('player-ready', (u, r, readyPlayers, callback) => {
+        const user = getUser(socket.id);
+        console.log(user)
+        socket.emit('ready-up', { user })
+        socket.broadcast.to(user.room).emit('ready-up', { user })
+        callback()
     })
 
     socket.on('bad-path', (qs, callback) => {

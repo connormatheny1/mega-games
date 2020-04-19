@@ -3,16 +3,19 @@ import queryString from 'query-string'
 import onlineIcon from '../../../assets/icons/onlineIcon.png';
 import {
     Button,
+    Intent,
+    Elevation
 } from "@blueprintjs/core"
 
 
-const PlayerList = ({ users, user, room }) => {
+const PlayerList = ({ users, user, room, updateReadyPlayers, readyPlayers, setReady }) => {
     const [username, setUsername] = useState('')
-    //const [room, setRoom] = useState('')
     const [numUsers, setNumUsers] = useState()
+    const [buttonText, setButtonText] = useState("Join")
     const [disabledJoin, setDisabledJoin] = useState()
     const [userList, setUserList] = useState()
-    const [readyPlayers, setReadyPlayers] = useState([])
+    const [isReady, setIsReady] = useState()
+    const [btnIcon, setBtnIcon] = useState("ban-circle")
     const [btnStateStyle, setBtnStateStyle] = useState({
         boxShadow: '-5px -5px 20px #fff,  5px 5px 20px #BABECC',
     })
@@ -28,58 +31,42 @@ const PlayerList = ({ users, user, room }) => {
         {val: 8, path:require("../../../assets/images/8.png")},
     ]
 
-    // const joinHoverIn = () => {
-    //     setBtnStateStyle({
-    //         boxShadow: '-2px -2px 5px #fff, 2px 2px 5px #BABECC'
-    //     })
-    // }
-
-    // const joinHoverOut = () => {
-    //     setBtnStateStyle({
-    //         boxShadow: '-5px -5px 20px #fff,  5px 5px 20px #BABECC',
-    //     })
-    // }
-
-    const joinClick = () => {
-        setBtnStateStyle({
-            boxShadow: 'inset 1px 1px 2px #BABECC, inset -1px -1px 2px #fff'
-        })
-        setBtnStateStyle({
-            boxShadow: '-5px -5px 20px #fff,  5px 5px 20px #BABECC',
-        })
-
-        addReadyPlayer(user.username, room)        
+    const joinClick = (e) => {
+        e.preventDefault()
+        // setBtnStateStyle({
+        //     boxShadow: 'inset 1px 1px 2px #BABECC, inset -1px -1px 2px #fff'
+        // })
+        // setBtnStateStyle({
+        //     boxShadow: '-5px -5px 20px #fff,  5px 5px 20px #BABECC',
+        // })
+        setReady(true)
+        if(btnIcon === "ban-circle"){
+            setBtnIcon("confirm")
+        }
+        else{
+            setBtnIcon("ban-circle")
+        }
+        if(buttonText === "Join"){
+            setButtonText("")
+        }
+        else{
+            setButtonText("Join")
+        }
+        updateReadyPlayers(user, room, readyPlayers)
     }
 
     useEffect(() => {
         setUserList(users)
     }, [userList])
 
-    useEffect(() => {
-        setReadyPlayers([...readyPlayers, user])
-        console.log(readyPlayers)
-    }, [])
-
-    const addReadyPlayer = ({ username, room }) => {
-        let u;
-        const existingUser = readyPlayers.find((user) => user.room === room && user.username === username)
-
+    const isReadyF = (u) => {
+        let t;
+        const existingUser = readyPlayers.find((user) => user.username === u)
         if(existingUser){
-            return { error: 'already ready'}
+            return true;
         }
-
-        if(users.length < 1){
-            u = { username, room, creator: true }
-            setReadyPlayers([...readyPlayers, u])
-        }
-        else{
-            u = { username, room, creator: false }
-            setReadyPlayers([...readyPlayers, u])
-        }
-
-        console.log(readyPlayers)
+        return false
     }
-
 
     return(
         <div className="playerListComp">
@@ -92,11 +79,14 @@ const PlayerList = ({ users, user, room }) => {
                                 <span>{u.username}</span>
                             </div>
                             <Button
+                                icon={btnIcon}
                                 className="joinButton"
                                 disabled={user.username === u.username ? false : true}
                                 style={btnStateStyle}
-                                onClick={joinClick}
-                            >JOIN</Button>
+                                onClick={(e) => joinClick(e)}
+                                intent={u.ready ? Intent.SUCCESS : null}
+                                text={buttonText}
+                            />
                         </div>
                     ))
                 ) : (
