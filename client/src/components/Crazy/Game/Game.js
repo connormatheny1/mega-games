@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import GameBoard from "./GameBoard"
 import {
     Icon,
     H3,
@@ -9,29 +10,30 @@ import {
     Button,
 } from "@blueprintjs/core"
 const Game = (props) => {
-    const [started, setStarted] = useState(false);
+    const [started, setStarted] = useState();
+    const [me, setMe] = useState(props.user)
+    const [readyPlayers, setReadyPlayers] = useState()
+    const { numUsers, gameStarted } = props
 
     const startGame = (e) => {
         e.preventDefault()
-        setStarted(true)
         props.startGame(e);
+        setStarted(true)
     }
 
     return(
         <>
             {
-                props.gameStarted ? (
-                    <div className="gameboard started">
-
-                    </div>
+                gameStarted ? (
+                    <GameBoard numUsers={numUsers} readyPlayers={props.readyPlayers} user={props.user} />
                 ) : (
-                    props.numUsers === props.readyPlayers.length ? (
+                    numUsers === props.readyPlayers.length ? (
                         <Button
                             text="Start a game"
                             icon="tick"
                             className="gameboard notstarted"
                             intent={Intent.SUCCESS}
-                            onClick={e => startGame(e)}
+                            onClick={(e) => startGame(e)}
                         />
                     ) : (
                         <Button 

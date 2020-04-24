@@ -39,7 +39,7 @@ const CrazyMain = props => {
     const [chatIcon, setChatIcon] = useState(true)
     const [msgCount, setMsgCount] = useState(0)
     const [emojis, setEmojis] = useState(false)
-    const [gameStarted, setGameStarted] = useState(false)    
+    const [gameStarted, setGameStarted] = useState()    
     const [readyPlayers, setReadyPlayers] = useState([])    
     const ENDPOINT = 'localhost:5000/crazy/rooms'
     
@@ -115,14 +115,11 @@ const CrazyMain = props => {
         }
     }
 
-    const startGame = (e) => {
-        e.preventDefault()
-        socket.emit('game-started', { user: props.user, users, room, numUsers }, () => setGameStarted(false))//errors may happen with callback here
-    }
-
     useEffect(() => {
         socket.on('start-game', (data) => {
-            setGameStarted(data.gameStarted)
+            if(!gameStarted){
+                setGameStarted(data.gameStarted)
+            }
         })
     }, [gameStarted])
 
@@ -167,6 +164,12 @@ const CrazyMain = props => {
             </H5>
         </div> 
     )
+
+    const startGame = (e) => {
+        e.preventDefault()
+        setGameStarted(true)
+        socket.emit('game-started', { user: props.user, users, room, numUsers })//errors may happen with callback here
+    }
 
     const chatToggle = () => {
         setIsChatOpen(!isChatOpen)
@@ -264,7 +267,7 @@ const CrazyMain = props => {
                     <Button icon={playerListIcon ? "double-chevron-left" : "double-chevron-right"} minimal="true" onClick={playerListToggle} className="drawer-button" style={ playerListOpen ? {left: '238px'} : {left: '0px'}}/>
                 </div>
                 <Paper elevation={4} className="gameboard-container h-100" style={playerListOpen ? {width: 'calc(100% - 260px'} : {width: '100%'}}>
-                    <Game numUsers={numUsers} startGame={startGame} gameStarted={gameStarted} readyPlayers={readyPlayers}/>
+                    <Game user={props.user} numUsers={numUsers} startGame={startGame} gameStarted={gameStarted} readyPlayers={readyPlayers}/>
                 </Paper>
             </div>
         </div>

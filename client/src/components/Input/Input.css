@@ -3,9 +3,8 @@ justify-content: center;  }
   
   .input {
     box-sizing: border-box;
-    border-radius: 8px;
     padding: 2%;
-    width: 79%;
+    width: 80%;
     font-size: 1em;
     border: 1px solid #2979FF;
     border-top-right-radius: 0;
@@ -25,6 +24,4 @@ justify-content: center;  }
     display: inline-block;
     border: none;
     width: 20%;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
   }

@@ -22,7 +22,10 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
 
         if(error) return callback(error)
         console.log(socket)
-        socket.emit('message', { user: 'admin', text: `${user.username}, welcome to ${user.room}`})//lets cur user know theyve joined
+        socket.emit('message', { 
+            user: 'admin', 
+            text: `${user.username}, welcome to ${user.room}`
+        })//lets cur user know theyve joined
         socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.username} has joined`})//lets all other connected users know user above has joined
 
         socket.join(user.room)
@@ -51,7 +54,6 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
         const user = getUser(socket.id)
         socket.emit('start-game', {gameStarted: true})
         socket.broadcast.to(user.room).emit('start-game', {gameStarted: true})
-        callback()
     })
 
     socket.on('player-ready', (u, r, readyPlayers, callback) => {
