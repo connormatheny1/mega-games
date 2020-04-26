@@ -11,11 +11,11 @@ import {
 const PlayerList = ({ users, user, room, updateReadyPlayers, readyPlayers, setReady }) => {
     const [username, setUsername] = useState('')
     const [numUsers, setNumUsers] = useState()
-    const [buttonText, setButtonText] = useState("Join")
+    const [buttonText, setButtonText] = useState("")
     const [disabledJoin, setDisabledJoin] = useState()
     const [userList, setUserList] = useState()
     const [isReady, setIsReady] = useState()
-    const [btnIcon, setBtnIcon] = useState("ban-circle")
+    const [btnIcon, setBtnIcon] = useState("")
     const [btnStateStyle, setBtnStateStyle] = useState({
         boxShadow: '-5px -5px 20px #fff,  5px 5px 20px #BABECC',
     })
@@ -31,64 +31,60 @@ const PlayerList = ({ users, user, room, updateReadyPlayers, readyPlayers, setRe
         {val: 8, path:require("../../../assets/images/8.png")},
     ]
 
-    const joinClick = (e) => {
+    const joinClick = (e, u) => {
         e.preventDefault()
-        // setBtnStateStyle({
-        //     boxShadow: 'inset 1px 1px 2px #BABECC, inset -1px -1px 2px #fff'
-        // })
-        // setBtnStateStyle({
-        //     boxShadow: '-5px -5px 20px #fff,  5px 5px 20px #BABECC',
-        // })
-        setReady(true)
-        if(btnIcon === "ban-circle"){
-            setBtnIcon("confirm")
-        }
-        else{
-            setBtnIcon("ban-circle")
-        }
-        if(buttonText === "Join"){
-            setButtonText("")
-        }
-        else{
-            setButtonText("Join")
+        document.getElementById(`${user.username}`)
+        if(user.ready && user.username == u){
+            if(btnIcon === "ban-circle"){
+                setBtnIcon("confirm")
+            }
+            else{
+                setBtnIcon("ban-circle")
+            }
+            if(buttonText === "Join"){
+                setButtonText("")
+            }
+            else{
+                setButtonText("")
+            }
         }
         updateReadyPlayers(user, room, readyPlayers)
     }
 
+    const findReadyPlayers = (curr) => {
+        
+    }
+
     useEffect(() => {
         setUserList(users)
-    }, [userList])
-
-    const isReadyF = (u) => {
-        let t;
-        const existingUser = readyPlayers.find((user) => user.username === u)
-        if(existingUser){
-            return true;
-        }
-        return false
-    }
+    }, [userList, readyPlayers])
 
     return(
         <div className="playerListComp">
             {
                 users ? (
-                    users.map((u, i) => (
-                        <div className="player-list-item" key={i}>
-                            <div>
-                                <img src={onlineIcon} height={10} width={10}></img>
-                                <span>{u.username}</span>
+                    users.map((u, i) => {
+                        return(
+                            <div className="player-list-item" key={i} id={u.username}>
+                                <div>
+                                    <img src={onlineIcon} height={10} width={10}></img>
+                                    <span>{u.username}</span>
+                                </div>
+                                <Button
+                                    key={u.username}
+                                    id={u.username}
+                                    icon={user.ready ? "confirm" : "ban-circle"}
+                                    className="joinButton"
+                                    disabled={user.username === u.username ? false : true}
+                                    style={btnStateStyle}
+                                    onClick={(e) => joinClick(e, u.username)}
+                                    intent={u.ready ? Intent.SUCCESS : null}
+                                    text={buttonText}
+                                />
                             </div>
-                            <Button
-                                icon={btnIcon}
-                                className="joinButton"
-                                disabled={user.username === u.username ? false : true}
-                                style={btnStateStyle}
-                                onClick={(e) => joinClick(e)}
-                                intent={u.ready ? Intent.SUCCESS : null}
-                                text={buttonText}
-                            />
-                        </div>
-                    ))
+                        )
+                        
+                    })
                 ) : (
                     <p>No players in this room, weird, not normal behavior</p>
                 )

@@ -13,7 +13,7 @@ const Game = (props) => {
     const [started, setStarted] = useState();
     const [me, setMe] = useState(props.user)
     const [readyPlayers, setReadyPlayers] = useState()
-    const { numUsers, gameStarted } = props
+    const { numUsers } = props
 
     const startGame = (e) => {
         e.preventDefault()
@@ -24,8 +24,8 @@ const Game = (props) => {
     return(
         <>
             {
-                gameStarted ? (
-                    <GameBoard numUsers={numUsers} readyPlayers={props.readyPlayers} user={props.user} />
+                props.gameStarted ? (
+                    <GameBoard numUsers={numUsers} gameStarted={props.gameStarted} readyPlayers={props.readyPlayers} user={props.user} deck={props.deck} opponentNumCards={props.opponentNumCards}/>
                 ) : (
                     numUsers === props.readyPlayers.length ? (
                         <Button

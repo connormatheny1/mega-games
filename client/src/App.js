@@ -24,10 +24,11 @@ const App = () => {
     function usePersistedState(key, def){
         const [user, setUser] = useState(
             () => JSON.parse(localStorage.getItem(key)) || def
-    );
-    useEffect(() => {
-        localStorage.setItem(key, JSON.stringify(user));
-    }, [key, user]);
+        );
+        useEffect(() => {
+            if(key != 'hand') localStorage.setItem(key, JSON.stringify(user));
+            
+        }, [key, user]);
         return [user, setUser];
     }
 
@@ -42,7 +43,8 @@ const App = () => {
         current_room: null,
         roomCreator: false,
         socket_id: null,
-        ready: false
+        ready: false,
+        hand: null
     });
 
     const [loginModal, toggleLoginModal] = useState(false)
@@ -74,7 +76,8 @@ const App = () => {
                 uid: res.data.rows.uid,
                 roomCreator: false,
                 socket_id: null,
-                ready: false
+                ready: false,
+                hand: null
             })
         }
     }
@@ -129,6 +132,13 @@ const App = () => {
         }))
     }
 
+    const setHand = (h) => {
+        setUser(prevState => ({
+            ...prevState,
+            hand: h
+        }))
+    }
+
     return(
         <>
             <Navigation updateApp={updateGrandparent} isLoggedIn={user.isLoggedIn} logout={logout} updateReg={updateRegisterModal} registerOpen={registerModal} loginOpen={loginModal} user={user} />
@@ -141,7 +151,7 @@ const App = () => {
                 />
                 <Route path="/crazy/rooms" 
                     render={
-                        (props) => <CrazyMain {...props} user={user} updateUserRoom={updateUserRoom}  setUserSocketId={setUserSocketId} setReady={setReady} />
+                        (props) => <CrazyMain {...props} user={user} setHand={setHand} updateUserRoom={updateUserRoom} setUserSocketId={setUserSocketId} setReady={setReady} />
                     }
                 />
                  {/* <Route path="/settings" component={UserSettings} /> */}

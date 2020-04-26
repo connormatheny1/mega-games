@@ -47,5 +47,6 @@ const getActiveRooms = (data) => {
 const getUser = (id) => users.find((user) => user.id === id)
 
 const getUsersInRoom = (room) => users.filter((user) => user.room === room)
+const getOthersInRoom = (room, id) => users.filter((user) => user.room === room && user.id !== id)
 
-module.exports = { addUser, removeUser, getUser, getUsersInRoom, getActiveRooms }
+module.exports = { addUser, removeUser, getUser, getUsersInRoom, getActiveRooms, getOthersInRoom }

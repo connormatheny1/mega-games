@@ -1,7 +1,7 @@
 {
   "name": "client",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "dependencies": {
     "@blueprintjs/core": "^3.25.0",
     "@blueprintjs/docs-theme": "^3.4.0",

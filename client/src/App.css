@@ -688,58 +688,7 @@ body{
     height: 100%;
   }
 
-  .gameboard{
-    width: 100%;
-    height: 100%;
-    min-height: 100%;
-    padding: 10px;
-    display: flex;
-  }
-
-  .gameboard.started{
-    background-color: green;
-    height: calc(100vh - 121px);
-  }
-
-  .gameboard.started.two{
-    flex-direction: column;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .other-players-cards-2{
-    display: flex;
-    height: 30%;
-    width: 100%;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .middle-row-2{
-    display: flex;
-    width: 100%;
-    height: 40%;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .your-cards-2{
-    display: flex;
-    height: 30%;
-    width: 100%;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .gameboard.notstarted{
-    flex-direction: row;
-  }
-
-
+  
   .chat-container{
     width: 100%;
     display: flex;
@@ -823,6 +772,139 @@ body{
   .deck-container{
     width: 150px;
     height: 350px;
+  }
+
+  .gameboard{
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    padding: 10px;
+    display: flex;
+  }
+
+  .gameboard.started{
+    background-color: green;
+    height: calc(100vh - 121px);
+  }
+
+  .gameboard.started.two{
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .other-players-cards-2{
+    display: flex;
+    height: 30%;
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .middle-row-2{
+    display: flex;
+    width: 100%;
+    height: 40%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .your-cards-2{
+    display: flex;
+    height: 30%;
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+  }
+
+  .gameboard.notstarted{
+    flex-direction: row;
+  }
+
+  .card{
+    flex-grow: 1;
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+    background: white;
+    border: 1px solid #BFCCD6;
+    border-radius: 8px;
+    box-sizing: border-box;
+    max-width: 130px;
+    position: relative;
+  }
+
+  .card.opponent{
+    flex-grow: 1;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px;
+    background: white;
+    border: 1px solid #BFCCD6;
+    border-radius: 8px;
+    box-sizing: border-box;
+    max-width: 87px;
+  }
+
+  .card-inner{
+    height: 100%;
+    border-radius: 7px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-inner.inner-opponent{
+    min-height: 100%;
+    min-width: 100%;
+    border-radius: 6px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #394B59;
+  }
+
+  .card-val-center{
+    margin: 0;
+    text-align: center;
+  }
+
+  .card-val-center .card-not-icon{
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .card-icon{
+
+  }
+
+  .card-val-right{
+    text-align: right;
+    width: 100%;
+    font-size: 18px;
+    margin: 0;
+    padding: 3px 8px 0;
+  }
+
+  .card-val-left{
+    text-align: left;
+    width: 100%;
+    margin: 0;
+    font-size: 18px;
+    padding: 3px 8px 0;
   }
   
   /*HELPERS*/
