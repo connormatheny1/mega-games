@@ -36,7 +36,36 @@ const GameBoard = (props) => {
 
     const overlapLogic = (i, isUser) => {
         if(isUser){
+            const num = props.user.hand.length
+            const isEven = num % 2 === 0
+            let firstHalf, secondHalf, half, retVal, px
 
+            if(isEven){
+                half = num / 2
+                let diff = half - i
+                if(diff <= 1){
+                    retVal = {left: '2.5%'}
+                    return retVal
+                }
+                let tmp = ( (diff - 1) * 3.75 ) + 2.5
+                return {left: `${tmp}%`}
+            }
+            else{
+                half = Math.round(num / 2)
+            }
+
+            if(i < half){
+                px = (i + 1) * 55
+                retval = {left: }
+            }
+        
+            firstHalf = props.user.hand.slice(0, half)
+            secondHalf = props.user.hand.slice(half)
+
+            
+            for(let i = 0; i < firstHalf.length; i++){
+
+            }
         }
     }
 
