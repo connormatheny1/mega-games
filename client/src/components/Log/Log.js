@@ -1,17 +1,12 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
+import ScrollToBottom from 'react-scroll-to-bottom'
 import {
-    Icon,
-    H3,
-    H4,
-    H5,
-    Position,
     Intent,
     Button,
     Collapse,
     Pre
 } from "@blueprintjs/core"
 const Log = (props) => {
-
     const toggle = () => {
         props.toggleLog(!props.logOpen)
     }
@@ -19,20 +14,23 @@ const Log = (props) => {
     return(
         <div className="site-log">
             <Collapse isOpen={props.logOpen} keepChildrenMounted={true} className="logs">
-                {
-                    props.data.map((log, i) => (
-                        <Pre key={i} className="log-item">
-                            {log}
-                        </Pre>
-                    ))
-                }
+                <ScrollToBottom>
+                    {
+                        props.data.map((log, i) => (
+                            <>
+                                <Pre key={i} className="log-item">
+                                    {log}
+                                </Pre>
+                            </>
+                        ))
+                    }
+                </ScrollToBottom>
             </Collapse>
-            <Button onClick={toggle} outlined="true" intent={Intent.PRIMARY}>
-                {props.logOpen ? 'Close' : 'Show'} logs
+            <Button onClick={toggle} outlined="true" intent={Intent.PRIMARY} className="logs-btn">
+                {props.logOpen ? 'Close' : 'Open'} logs
             </Button>
         </div>
     )
-
 }
 
 export default Log

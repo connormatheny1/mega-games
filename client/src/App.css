@@ -782,6 +782,10 @@ body{
   .gameboard.started{
     background-color: green;
     height: calc(100vh - 121px);
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .gameboard.started.two, .gameboard.started.one{
@@ -789,6 +793,62 @@ body{
     width: 100%;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .other-players-cards-3-cont{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 32%;
+  }
+
+  .other-player{
+    display: flex;
+    flex-grow: 1;
+    height: 100%;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .other-players-cards{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    flex-wrap: wrap-reverse;
+    position: relative;
+    height: 100%;
+    min-width: 70px;
+    width: 15%;
+  }
+
+  .card-opponent-plus{
+    flex-grow: 1;
+    flex-shrink: 1;
+    height: 110px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2.5px;
+    background: white;
+    border: 1px solid #BFCCD6;
+    border-radius: 6px;
+    box-sizing: border-box;
+    width: 70px;
+    position: absolute;
+  }
+
+  .card-opponent-plus-inner{
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #394B59;
   }
 
   .other-players-cards-2-cont{
@@ -812,7 +872,7 @@ body{
   .middle-row-2{
     display: flex;
     width: 100%;
-    height: 30%;
+    height: 25%;
     flex-direction: row;
     justify-content: center;
     align-items: center;
@@ -888,7 +948,7 @@ body{
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 30%;
+    height: 28%;
     justify-content: space-between;
     align-items: center;
   }
@@ -898,7 +958,7 @@ body{
     height: 100%;
     width: 100%;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
     z-index: 1;
     flex-wrap: wrap-reverse;
@@ -1000,13 +1060,17 @@ body{
 
   .site-log{
     position: absolute;
-    right: 0;
-    bottom: 0;
+    right: 3px;
+    bottom: 31px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-end;
     z-index: 1000;
+  }
+
+  .logs-btn{
+    background-color: rgb(255, 255, 255, 0.3)!important;
   }
 
   .logs{
@@ -1016,6 +1080,7 @@ body{
     align-items: flex-start;
     background-color: #EBF1F5;
     border-radius: 3px;
+    max-width: 350px;
   }
 
   .logs .bp3-collapse-body{
@@ -1092,11 +1157,7 @@ body{
     width: 30%;
   }
 
-  @media only screen and (max-width: 1020px){
-
-  }
-
-  @media only screen and (max-width: 990px){
+  @media only screen and (max-width: 998px){
     .roomCont{
       flex-direction: column;
       justify-content: flex-start;
@@ -1105,6 +1166,15 @@ body{
   
     .roomCont .roomsLeft, .roomCont .browseRooms{
       width: 100%;
+    }
+
+    .your-cards-2{
+      justify-content: flex-end;
+    }
+
+    .card{
+      height: 130px;
+      width: 83px;
     }
   }
 

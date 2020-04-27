@@ -8,7 +8,7 @@ import {
 } from "@blueprintjs/core"
 
 
-const PlayerList = ({ users, user, room, updateReadyPlayers, readyPlayers, setReady }) => {
+const PlayerList = ({ users, user, room, emitReady, readyPlayers, setReady }) => {
     const [username, setUsername] = useState('')
     const [numUsers, setNumUsers] = useState()
     const [buttonText, setButtonText] = useState("")
@@ -33,7 +33,6 @@ const PlayerList = ({ users, user, room, updateReadyPlayers, readyPlayers, setRe
 
     const joinClick = (e, u) => {
         e.preventDefault()
-        document.getElementById(`${user.username}`)
         if(user.ready && user.username == u){
             if(btnIcon === "ban-circle"){
                 setBtnIcon("confirm")
@@ -48,11 +47,7 @@ const PlayerList = ({ users, user, room, updateReadyPlayers, readyPlayers, setRe
                 setButtonText("")
             }
         }
-        updateReadyPlayers(user, room, readyPlayers)
-    }
-
-    const findReadyPlayers = (curr) => {
-        
+        emitReady(user, room, readyPlayers)
     }
 
     useEffect(() => {

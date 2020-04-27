@@ -46,7 +46,8 @@ const CrazyMain = props => {
     const [msgCount, setMsgCount] = useState(0)
     const [emojis, setEmojis] = useState(false)
     const [gameStarted, setGameStarted] = useState(false)    
-    const [readyPlayers, setReadyPlayers] = useState([])
+    const [readyPlayers, setReadyPlayers] = useState()
+    const [otherPlayers, setOtherPlayers] = useState();
     const [deck, setDeck] = useState()  
     const [hand, setHand] = useState(props.user.hand)
     const [opponentNumCards, setOpponentNumCards] = useState()
@@ -132,36 +133,57 @@ const CrazyMain = props => {
         }
     }
 
-    const updateReadyPlayers = (u, r, rp) => {
-        if(props.user.ready){
-            props.setReady(false)
-        }
-        else{
-            props.setReady(true)
-        }
-        setReadyPlayers([...readyPlayers, u])
-        emitReady(u, r)
-    }
+    // const updateReadyPlayers = (u, r, rp) => {
+    //     if(props.user.ready){
+    //         props.setReady(false)
+    //     }
+    //     else{
+    //         props.setReady(true)
+    //     }
+    //     setReadyPlayers([...readyPlayers, u])
+    //     emitReady(u, r)
+    // }
 
     const emitReady = (u, r) => {
-        socket.emit('player-ready', u, r, readyPlayers, () => {
-            const index = readyPlayers.findIndex((user) => user.username === u.username)
-            if(index !== -1){
-                if(users[index].ready){
-                    props.setReady(false)
-                }
-                setReadyPlayers(readyPlayers.filter(a => a.username !== readyPlayers[index].username))
+        if(u.username === props.user.username){
+            if(props.user.ready){
+                props.setReady(false)
             }
-        })
+            else{
+                props.setReady(true)
+            }
+        }
+        const index = readyPlayers.findIndex((usr) => usr.username === u.username)
+        if(index !== -1){
+            if(users[index].ready){
+                users[index].ready = false
+                setReadyPlayers(readyPlayers.filter(a => a.username !== readyPlayers[index].username))
+                socket.emit('player-ready', u, r, readyPlayers, false)
+            }
+            else{
+                users[index].ready = true
+                setReadyPlayers()
+                socket.emit('player-ready', u, r, readyPlayers, true)
+            }
+        }
     }
 
     useEffect(() => {
-        socket.on('ready-up', ({user}) => {
-            const existing = readyPlayers.find((u) => u.username === user.username)
-            if(existing){
-                return
+        socket.on('ready-up', ({user, rp}) => {
+            const existing = rp.find((u) => u.username === user.username)
+            if(!existing){
+                setReadyPlayers(rp)//[...readyPlayers, user]
+                const existingOther = otherPlayers.find((u) => u.username === user.username)
+                if(!existingOther){
+                    setOtherPlayers([...otherPlayers, user])
+                }
             }
-            setReadyPlayers([...readyPlayers, user])
+            else{
+                const existingOther = otherPlayers.find((u) => u.username === user.username)
+                if(!existingOther){
+                    setOtherPlayers([...otherPlayers, user])
+                }
+            }
         })
     }, [readyPlayers])
 
@@ -275,7 +297,7 @@ const CrazyMain = props => {
                 <div className="playerListCont">
                     <Drawer {...drawerProps}>
                         <div className="fc-sb-c h-100 w-100">
-                            <PlayerList users={users} readyPlayers={readyPlayers} user={props.user} room={room} updateReadyPlayers={updateReadyPlayers} setReady={setReady}/>
+                            <PlayerList users={users} readyPlayers={readyPlayers} user={props.user} room={room} emitReady={emitReady} setReady={setReady}/>
                             <div className="chat-container">
                                 <Paper className="f-sb-c w-100 chat-head" elevation={2}>
                                     <H4>Chat</H4>
@@ -311,7 +333,7 @@ const CrazyMain = props => {
                     <Button icon={playerListOpen ? "double-chevron-left" : "double-chevron-right"} minimal="true" onClick={playerListToggle} className="drawer-button" style={ playerListOpen ? {left: '238px'} : {left: '0px'}}/>
                 </div>
                 <Paper elevation={4} className="gameboard-container h-100" style={playerListOpen ? {width: 'calc(100% - 240px'} : {width: '100%'}}>
-                    <Game user={props.user} numUsers={numUsers} startGame={startGame} gameStarted={gameStarted} readyPlayers={readyPlayers} deck={deck} opponentNumCards={opponentNumCards} playerListOpen={playerListOpen}/>
+                    <Game user={props.user} numUsers={numUsers} startGame={startGame} gameStarted={gameStarted} otherPlayers={otherPlayers} readyPlayers={readyPlayers} deck={deck} opponentNumCards={opponentNumCards} playerListOpen={playerListOpen}/>
                 </Paper>
             </div>
         </div>

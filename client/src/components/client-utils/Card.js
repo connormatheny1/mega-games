@@ -49,7 +49,7 @@ const Card = ( props ) => {
     }
 
     return(
-        <div className={props.className} id={props.id} >
+        <div className={props.className} id={props.id} style={props.style}>
             {props.children}
         </div>
     )

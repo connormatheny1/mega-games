@@ -69,10 +69,13 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
         io.of(process.env.NAMESPACE).to(user.room).emit('updated-deck', { deck: updatedDeck })
     })
 
-    socket.on('player-ready', (u, r, readyPlayers, callback) => {
+    socket.on('player-ready', (u, r, readyPlayers, b) => {
+        console.log(readyPlayers)
+        console.log(b)
         const user = getUser(socket.id);
-        socket.emit('ready-up', { user })
-        socket.broadcast.to(user.room).emit('ready-up', { user })
+        //socket.emit('ready-up', { user })
+        //socket.broadcast.to(user.room).emit('ready-up', { user })
+        io.in(user.room).emit('ready-up', { user, rp: readyPlayers })
         callback()
     })
 

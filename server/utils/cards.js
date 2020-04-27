@@ -46,6 +46,28 @@ const dealCards = (usersInRoom, deck) => {
     return [usersInRoom, deck]
 }
 
+const drawCard = (player, deck) => {
+
+}
+
+const giveCards = (to, deck, num) => {
+
+}
+
+const replenishDeck = (deck) => {
+    //if deck has one card in it
+    //create new deck
+    //append additional deck to end of current deck
+}
+
+const playCard = (player) => {
+    
+}
+
+
+
+
+
 module.exports = {
     createDeck,
     dealCards
