@@ -25,7 +25,7 @@ const Game = (props) => {
         <>
             {
                 props.gameStarted ? (
-                    <GameBoard numUsers={numUsers} gameStarted={props.gameStarted} readyPlayers={props.readyPlayers} user={props.user} deck={props.deck} opponentNumCards={props.opponentNumCards}/>
+                    <GameBoard playerListOpen={props.playerListOpen} numUsers={numUsers} gameStarted={props.gameStarted} readyPlayers={props.readyPlayers} user={props.user} deck={props.deck} opponentNumCards={props.opponentNumCards}/>
                 ) : (
                     numUsers === props.readyPlayers.length ? (
                         <Button

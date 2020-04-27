@@ -4,7 +4,7 @@ body{
   }
   
   html{
-    height: 100%;
+    /* height: 100%; */
   }
   
   #root{
@@ -320,7 +320,7 @@ body{
     flex-direction: column;
     justify-content: space-around;
     align-items: flex-start;
-    position: absolute;
+    position: static;
     bottom: 0;
     padding: 0 5px;
     box-sizing: border-box;
@@ -414,7 +414,7 @@ body{
     display: flex;
     width: 100%;
     height: 100%;
-    min-height: 500px;
+    min-height: 600px;
     justify-content: center;
     align-items: flex-start;
   }
@@ -438,6 +438,7 @@ body{
     padding: 20px;
     box-sizing: border-box;
     color: #555;
+    min-height: calc(100vh - 90px);
   }
   
   .roomCont .bp3-heading{
@@ -493,6 +494,7 @@ body{
   
   /*GAME PAGE STYLES*/
   .gameCont{
+    min-height: calc(100vh - 90px);
     width: 100%;
     height: 100%;
     display: flex;
@@ -570,7 +572,7 @@ body{
   
   .gameBody .playerListCont .bp3-overlay.bp3-overlay-open.bp3-overlay-inline.bp3-overlay-container{
     height: 100%!important;
-    width: 260px;
+    width: 240px;
   }
   
   .gameBody .playerListCont .drawer{
@@ -787,16 +789,25 @@ body{
     height: calc(100vh - 121px);
   }
 
-  .gameboard.started.two{
+  .gameboard.started.two, .gameboard.started.one{
     flex-direction: column;
     width: 100%;
     justify-content: space-between;
     align-items: center;
   }
 
+  .other-players-cards-2-cont{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 20%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   .other-players-cards-2{
     display: flex;
-    height: 30%;
+    height: 100%;
     width: 100%;
     flex-direction: row;
     justify-content: center;
@@ -806,29 +817,44 @@ body{
   .middle-row-2{
     display: flex;
     width: 100%;
-    height: 40%;
+    height: 30%;
     flex-direction: row;
     justify-content: center;
     align-items: center;
   }
 
+  .your-cards-2-cont{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 30%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   .your-cards-2{
     display: flex;
-    height: 30%;
+    height: 100%;
     width: 100%;
     flex-direction: row;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     z-index: 1;
+    flex-wrap: wrap-reverse;
   }
 
   .gameboard.notstarted{
     flex-direction: row;
   }
 
+  .bp3-overlay.bp3-overlay-inline{
+    /* overflow: hidden!important */
+  }
+
   .card{
     flex-grow: 1;
-    height: 180px;
+    flex-shrink: 1;
+    height: 165px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -837,12 +863,16 @@ body{
     border: 1px solid #BFCCD6;
     border-radius: 8px;
     box-sizing: border-box;
-    max-width: 130px;
+    width: 105px;
+    max-width: 105px;
+    flex-wrap: wrap;
     position: relative;
+    bottom: 0%;
   }
 
-  .card.opponent{
+  .card-opponent{
     flex-grow: 1;
+    flex-shrink: 1;
     height: 120px;
     display: flex;
     justify-content: center;
@@ -944,7 +974,7 @@ body{
 
   /*HEIGHT*/
   .h-100{
-    height: 100%;
+    height: calc(100vh - 90px);
   }
 
   .h-100.important{
@@ -968,6 +998,10 @@ body{
     width: 30%;
   }
 
+  @media only screen and (max-width: 1020px){
+
+  }
+
   @media only screen and (max-width: 990px){
     .roomCont{
       flex-direction: column;
@@ -980,27 +1014,24 @@ body{
     }
   }
 
-
-
-
-
-
-
-
-
-  /* @media (min-width: 320px) and (max-width: 480px) {
-    .outerContainer {
-      height: 100%;
+  @media only screen and (max-width: 768px){
+    .your-cards-2{
+      height: 36%;
     }
-  
-    .container {
-      width: 100%;
-      height: 100%;
+
+    .card{
+      right: 0%!important;
+      left: 0%!important;
     }
   }
-  
-  @media (min-width: 480px) and (max-width: 1200px) {
-    .container {
-      width: 60%;
+
+  @media only screen and (max-width: 685px){
+    .your-cards-2{
+      height: 36%;
     }
-  } */
+
+    .card{
+      height: 150px;
+      width: 90%;
+    }
+  }

@@ -45,6 +45,7 @@ const CrazyMain = props => {
     const [hand, setHand] = useState(props.user.hand)
     const [opponentNumCards, setOpponentNumCards] = useState()
     const [player, setPlayer] = useState(props.user)
+    const size = useWindowSize()
     const ENDPOINT = 'localhost:5000/crazy/rooms'
 
     
@@ -209,8 +210,9 @@ const CrazyMain = props => {
     }
  
     const playerListToggle = () => {
-        setPlayerListOpen(!playerListOpen)
-        setPlayerListIcon(!playerListIcon)
+        let b = !playerListOpen
+        setPlayerListOpen(b)
+        setPlayerListIcon(b)
     }
 
     const setUserSocketId = (s) => {
@@ -233,7 +235,7 @@ const CrazyMain = props => {
         hasBackdrop: false,
         lazy: true,
         position: Position.LEFT,
-        size: "260px",
+        size: "240px",
         className: "drawer",
         onClose: () => {setPlayerListOpen(!playerListOpen)},
         canOutsideClickClose: false,
@@ -296,14 +298,42 @@ const CrazyMain = props => {
                             </div>
                         </div>
                     </Drawer>
-                    <Button icon={playerListIcon ? "double-chevron-left" : "double-chevron-right"} minimal="true" onClick={playerListToggle} className="drawer-button" style={ playerListOpen ? {left: '238px'} : {left: '0px'}}/>
+                    <Button icon={playerListOpen ? "double-chevron-left" : "double-chevron-right"} minimal="true" onClick={playerListToggle} className="drawer-button" style={ playerListOpen ? {left: '238px'} : {left: '0px'}}/>
                 </div>
-                <Paper elevation={4} className="gameboard-container h-100" style={playerListOpen ? {width: 'calc(100% - 260px'} : {width: '100%'}}>
-                    <Game user={props.user} numUsers={numUsers} startGame={startGame} gameStarted={gameStarted} readyPlayers={readyPlayers} deck={deck} opponentNumCards={opponentNumCards} />
+                <Paper elevation={4} className="gameboard-container h-100" style={playerListOpen ? {width: 'calc(100% - 240px'} : {width: '100%'}}>
+                    <Game user={props.user} numUsers={numUsers} startGame={startGame} gameStarted={gameStarted} readyPlayers={readyPlayers} deck={deck} opponentNumCards={opponentNumCards} playerListOpen={playerListOpen}/>
                 </Paper>
             </div>
         </div>
     )
+}
+
+function useWindowSize() {
+    const isClient = typeof window === 'object';
+  
+    function getSize() {
+      return {
+        width: isClient ? window.innerWidth : undefined,
+        height: isClient ? window.innerHeight : undefined
+      };
+    }
+  
+    const [windowSize, setWindowSize] = useState(getSize);
+  
+    useEffect(() => {
+      if (!isClient) {
+        return false;
+      }
+      
+      function handleResize() {
+        setWindowSize(getSize());
+      }
+  
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []); // Empty array ensures that effect is only run on mount and unmount
+  
+    return windowSize;
 }
 
 export default CrazyMain;
