@@ -23,7 +23,13 @@ import PlayerList from './Game/PlayerList'
 let socket;
 
 const CrazyMain = props => {
-    
+    let currentdate = new Date(); 
+    let datetime = currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " @ "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
     const [username, setUsername] = useState('')
     const [room, setRoom] = useState('')
     const [users, setUsers] = useState()
@@ -45,11 +51,13 @@ const CrazyMain = props => {
     const [hand, setHand] = useState(props.user.hand)
     const [opponentNumCards, setOpponentNumCards] = useState()
     const [player, setPlayer] = useState(props.user)
+    const [currentTurnIndex, setCurrentTurnIndex] = useState(0)
+    const [playDirection, setPlayerDirection] = useState(true)//true = clockwise, false = counter clockwise
+    const [lastMove, setLastMove] = useState({player: {}, cardPlayed: {}, turnTo: {}})
     const size = useWindowSize()
     const ENDPOINT = 'localhost:5000/crazy/rooms'
 
     
-
     useEffect(() => {
         if(props.location.search.length < 2){
             return socket.emit('bad-path', {qs: props.location.search}, (error) => {
@@ -69,6 +77,8 @@ const CrazyMain = props => {
               alert(error);
             }
         });
+
+        props.updateLog(`${username} joined room '${room}' at ${datetime}`)
 
         return () => {
             socket.emit('disconnect')

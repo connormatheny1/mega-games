@@ -7,12 +7,20 @@ import UserProfile from './components/UserProfile/UserProfile'
 import LoginModal from './components/Modals/LoginModal/LoginModal'
 import RegisterModal from './components/Modals/RegisterModal/RegisterModal'
 import Footer from './components/Footer/Footer'
+import Log from './components/Log/Log'
 import axios from "axios"
 import './App.css'
 import { Route, Switch } from 'react-router-dom'
 
 
 const App = () => {
+    let currentdate = new Date(); 
+    let datetime = currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " @ "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
     const [username, setUsername] = useState('')
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [token, setToken] = useState('')
@@ -20,6 +28,9 @@ const App = () => {
     const [gamesplayed, setGamesPlayed] = useState(0)
     const [avatar, setAvatar] = useState(null)
     const [roomInfo, setRoomInfo] = useState()
+    const [log, setLog] = useState([`Log starting at: ${datetime}`])
+    const [logOpen, setLogOpen] = useState(false)
+
 
     function usePersistedState(key, def){
         const [user, setUser] = useState(
@@ -139,6 +150,14 @@ const App = () => {
         }))
     }
 
+    const updateLog = (l) => {
+        setLog([...log, l])
+    }
+
+    const toggleLog = (b) => {
+        setLogOpen(b)
+    }
+
     return(
         <>
             <Navigation updateApp={updateGrandparent} isLoggedIn={user.isLoggedIn} logout={logout} updateReg={updateRegisterModal} registerOpen={registerModal} loginOpen={loginModal} user={user} />
@@ -151,7 +170,7 @@ const App = () => {
                 />
                 <Route path="/crazy/rooms" 
                     render={
-                        (props) => <CrazyMain {...props} user={user} setHand={setHand} updateUserRoom={updateUserRoom} setUserSocketId={setUserSocketId} setReady={setReady} />
+                        (props) => <CrazyMain {...props} user={user} setHand={setHand} updateUserRoom={updateUserRoom} setUserSocketId={setUserSocketId} setReady={setReady} updateLog={updateLog} />
                     }
                 />
                  {/* <Route path="/settings" component={UserSettings} /> */}
@@ -165,6 +184,7 @@ const App = () => {
             <Footer />
             <LoginModal updateUser={userAuthed} updateApp={updateGrandparent} isOpen={loginModal} />
             <RegisterModal updateUser={userAuthed} isOpen={registerModal} updateApp={updateRegisterModal}/>
+            <Log data={log} toggleLog={toggleLog} logOpen={logOpen}/>
         </>
     )
 }

@@ -49,7 +49,7 @@ const Card = ( props ) => {
     }
 
     return(
-        <div className={props.className} id={props.id} style={overlapLogic(props.passkey, true)}>
+        <div className={props.className} id={props.id} >
             {props.children}
         </div>
     )
@@ -78,6 +78,7 @@ function useWindowSize() {
 }
 
 export default Card
+//style={overlapLogic(props.passkey, true)}
 /*useEffect(() => {
     if(list){
         for(let i = 0; i < list.length; i++){

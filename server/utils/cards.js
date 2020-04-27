@@ -41,7 +41,7 @@ const createDeck = (numUsers) => {
 
 const dealCards = (usersInRoom, deck) => {
     for(let i = 0; i < usersInRoom.length; i++){
-        usersInRoom[i].cards = deck.splice(0,10)
+        usersInRoom[i].cards = deck.splice(0,7)
     }
     return [usersInRoom, deck]
 }

@@ -18,7 +18,32 @@ const GameBoard = (props) => {
     const [yourCards, setYourCards] = useState()
     const [oppsCards, setOppsCards] = useState(props.opponentNumCards)
     const [oppsHand, setOppsHand] = useState(Array(props.opponentNumCards).fill('8s'))
-    
+    const [deck, setDeck] = useState(props.deck)
+    const [backwardsDeck, setBackwardsDeck] = useState(populateUnused())
+    const [currentCard, setCurrentCard] = useState(backwardsDeck.splice(0, 1))
+
+
+    useEffect(() => {
+        setDeck(props.deck)
+        setBackwardsDeck(populateUnused(props.deck))
+        if(props.deck[props.deck.length - 1].special === true){
+            props.deck.splice(0,1)
+            setCurrentCard(props.deck.splice(0, 1))
+        }
+        else{
+            setCurrentCard(props.deck.splice(0, 1))
+        }
+        
+    }, [props.deck])
+
+    function populateUnused (d){
+        let newArr = deck.slice(0).reverse().map(
+            function(val, idx){
+                return val
+            }
+        )
+        return newArr
+    }
 
     useEffect(() => {
         let youIndex = props.readyPlayers.findIndex((u) => u.username === props.user.username)
@@ -64,7 +89,7 @@ const GameBoard = (props) => {
                         </div>
                         
                         <div className="middle-row-2">
-                            <Deck numUsers={props.numUsers} gameStarted={props.gameStarted} />
+                            <Deck numUsers={props.numUsers} gameStarted={props.gameStarted} deck={props.deck} currentCard={currentCard} backwardsDeck={backwardsDeck} />
                         </div>
                         <div className="your-cards-2-cont">
                             <div className="your-cards-2">

@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import Card from '../../client-utils/Card'
 
 const Deck = (props) => {
-    const [deck, setDeck] = useState()
     const [needCards, setNeedCards] = useState(false)
     const [gameStarted, setGameStarted] = useState(props.gameStarted)
-    
-    
     const { numUsers } = props
 
     function createDeck () {
@@ -48,12 +46,24 @@ const Deck = (props) => {
         }
         return cards
     }
-    
 
     return(
-        <div className="deck-container">
-
-        </div>
+        <>
+            <div className="deck-container">
+                {
+                    props.backwardsDeck.map((card, i) => {
+                        return(
+                            <Card className="unplayed-card" key={i} passkey={i} id={`deck-${i}`} style={{zIndex: (i + 2)}} />
+                        )
+                    })
+                }
+            </div>
+            <div className="played-cards-container">
+                <Card className={`current-card ${props.currentCard[0].color}`} id={`current-card-id`}>
+                    <p>{props.currentCard[0].val}</p>
+                </Card>
+            </div>
+        </>
     )
 }
 
