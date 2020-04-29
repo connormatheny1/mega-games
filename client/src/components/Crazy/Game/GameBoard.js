@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import Deck from './Deck'
 import numWords from 'num-words'
 import Card from '../../client-utils/Card'
+import OpponentCard from '../../client-utils/OpponentCard'
 import { removeUser } from '../../client-utils/users'
 import {
     Icon,
@@ -46,7 +47,7 @@ const GameBoard = (props) => {
         setOppsHand(new Array(oppsCards).fill('8s'))
     }, [oppsCards])
 
-
+    console.log(props.otherPlayers)
     return(
         <div className={`gameboard started ${numWords(props.numUsers)}`}>
             {
@@ -72,25 +73,22 @@ const GameBoard = (props) => {
                     <>
                         <div className="other-players-cards-3-cont">
                                 {
-                                    props.otherPlayers > 1 ? (
-                                        props.otherPlayers.map((player) => (
-                                            <div className="other-player">
-                                                <div className="other-players-cards">
-                                                    {
-                                                        player.cards.map((card, i) => (
-                                                            <Card className="card-opponent-plus" style={{ zIndex: i, top: `${i * 10}%` }}>
-                                                                <div className="card-opponent-plus-inner">
-                                                                    8s
-                                                                </div>
-                                                            </Card>
-                                                        ))
-                                                    }
+                                    props.otherPlayers.length > 1 ? (
+                                        props.otherPlayers.map((c, i) => {
+                                            return(
+                                                <div className="other-player" id={`other-player-${i}`}>
+                                                    <div className="other-players-cards"> 
+                                                        {/* <Card className="card-opponent-plus" key={i} style={{ zIndex: i, top: `${i * 10}%` }}> */}
+                                                            <OpponentCard cards={c.cards} />
+                                                        {/* </Card> */}
+                                                        
+                                                    </div>
+                                                    <p>{c.username}</p>
+                                                    {/* <p>{c.cards.length}</p> */}
                                                 </div>
-                                                <p>{player.username}</p>
-                                                <p>{player.cards.length}</p>
-                                            </div>
-                                        ))
-                                    ) : (
+                                            )
+                                        })
+                                    )  : (
                                         <p>some how there are at least 3 people in here</p>
                                     )
                                 }

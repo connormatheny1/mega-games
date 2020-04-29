@@ -8,14 +8,13 @@ import {
 } from "@blueprintjs/core"
 
 
-const PlayerList = ({ users, user, room, emitReady, readyPlayers, setReady }) => {
+const PlayerList = ({ users, user, room, setReady }) => {
     const [username, setUsername] = useState('')
     const [numUsers, setNumUsers] = useState()
     const [buttonText, setButtonText] = useState("")
     const [disabledJoin, setDisabledJoin] = useState()
     const [userList, setUserList] = useState()
     const [isReady, setIsReady] = useState()
-    const [btnIcon, setBtnIcon] = useState("")
     const [btnStateStyle, setBtnStateStyle] = useState({
         boxShadow: '-5px -5px 20px #fff,  5px 5px 20px #BABECC',
     })
@@ -31,54 +30,64 @@ const PlayerList = ({ users, user, room, emitReady, readyPlayers, setReady }) =>
         {val: 8, path:require("../../../assets/images/8.png")},
     ]
 
-    const joinClick = (e, u) => {
+    const joinClick = (e) => {
         e.preventDefault()
-        if(user.ready && user.username == u){
-            if(btnIcon === "ban-circle"){
-                setBtnIcon("confirm")
-            }
-            else{
-                setBtnIcon("ban-circle")
-            }
-            if(buttonText === "Join"){
-                setButtonText("")
-            }
-            else{
-                setButtonText("")
-            }
-        }
-        emitReady(user, room, readyPlayers)
+        console.log(e.currentTarget.dataset.id)
+
     }
 
     useEffect(() => {
         setUserList(users)
-    }, [userList, readyPlayers])
+    }, [userList])
 
     return(
         <div className="playerListComp">
             {
                 users ? (
                     users.map((u, i) => {
-                        return(
-                            <div className="player-list-item" key={i} id={u.username}>
-                                <div>
-                                    <img src={onlineIcon} height={10} width={10}></img>
-                                    <span>{u.username}</span>
+                        if(u.username === user.username){
+                            return(
+                                <div className="player-list-item" key={i} id={u.username}>
+                                    <div>
+                                        <img src={onlineIcon} height={10} width={10}></img>
+                                        <span>{u.username}</span>
+                                    </div>
+                                    <Button
+                                        key={u.username}
+                                        id={`${u.username}-join-btn`}
+                                        icon={user.ready ? "confirm" : "ban-circle"}
+                                        className="joinButton"
+                                        disabled={false}
+                                        style={btnStateStyle}
+                                        onClick={joinClick}
+                                        intent={Intent.PRIMARY}
+                                        text={buttonText}
+                                    />
                                 </div>
-                                <Button
-                                    key={u.username}
-                                    id={u.username}
-                                    icon={user.ready ? "confirm" : "ban-circle"}
-                                    className="joinButton"
-                                    disabled={user.username === u.username ? false : true}
-                                    style={btnStateStyle}
-                                    onClick={(e) => joinClick(e, u.username)}
-                                    intent={u.ready ? Intent.SUCCESS : null}
-                                    text={buttonText}
-                                />
-                            </div>
-                        )
-                        
+                            )
+                        }
+                        else{
+                            return(
+                                <div className="player-list-item" key={i} id={u.username}>
+                                    <div>
+                                        <img src={onlineIcon} height={10} width={10}></img>
+                                        <span>{u.username}</span>
+                                    </div>
+                                    <Button
+                                        key={u.username}
+                                        data-id={i}
+                                        id={`${u.username}-join-btn`}
+                                        icon={user.ready ? "confirm" : "ban-circle"}
+                                        className="joinButton"
+                                        disabled={true}
+                                        style={btnStateStyle}
+                                        onClick={((e) => joinClick(e))}
+                                        intent={Intent.PRIMARY}
+                                        text={buttonText}
+                                    />
+                                </div>
+                            )
+                        }
                     })
                 ) : (
                     <p>No players in this room, weird, not normal behavior</p>

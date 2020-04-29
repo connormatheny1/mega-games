@@ -21,13 +21,14 @@ const Game = (props) => {
         props.startGame(e);
     }
 
+    console.log(props.otherPlayers)
     return(
         <>
             {
                 props.gameStarted ? (
-                    <GameBoard playerListOpen={props.playerListOpen} numUsers={numUsers} gameStarted={props.gameStarted} otherPlayers={props.otherPlayers} readyPlayers={props.readyPlayers} user={props.user} deck={props.deck} opponentNumCards={props.opponentNumCards}/>
-                ) : (
-                    numUsers === props.readyPlayers.length ? (
+                    <GameBoard users={props.users} otherPlayers={props.otherPlayers} playerListOpen={props.playerListOpen} numUsers={numUsers} gameStarted={props.gameStarted} user={props.user} deck={props.deck} opponents={props.opponents}/>
+                ) : (//=== props.readyPlayers.length
+                    numUsers ? (
                         <Button
                             text="Start a game"
                             icon="tick"

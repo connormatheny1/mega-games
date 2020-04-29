@@ -33,6 +33,7 @@ const CrazyMain = props => {
     const [username, setUsername] = useState('')
     const [room, setRoom] = useState('')
     const [users, setUsers] = useState()
+    const [otherPlayers, setOtherPlayers] = useState()
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
     const [playerListOpen, setPlayerListOpen] = useState(true)
@@ -46,19 +47,20 @@ const CrazyMain = props => {
     const [msgCount, setMsgCount] = useState(0)
     const [emojis, setEmojis] = useState(false)
     const [gameStarted, setGameStarted] = useState(false)    
-    const [readyPlayers, setReadyPlayers] = useState()
-    const [otherPlayers, setOtherPlayers] = useState();
     const [deck, setDeck] = useState()  
     const [hand, setHand] = useState(props.user.hand)
-    const [opponentNumCards, setOpponentNumCards] = useState()
+    const [opponents, setOpponents] = useState([])
     const [player, setPlayer] = useState(props.user)
     const [currentTurnIndex, setCurrentTurnIndex] = useState(0)
     const [playDirection, setPlayerDirection] = useState(true)//true = clockwise, false = counter clockwise
     const [lastMove, setLastMove] = useState({player: {}, cardPlayed: {}, turnTo: {}})
     const size = useWindowSize()
+
+    const [readyPlayers, setReadyPlayers] = useState([])
+    
+
     const ENDPOINT = 'localhost:5000/crazy/rooms'
 
-    
     useEffect(() => {
         if(props.location.search.length < 2){
             return socket.emit('bad-path', {qs: props.location.search}, (error) => {
@@ -84,7 +86,6 @@ const CrazyMain = props => {
         return () => {
             socket.emit('disconnect')
             socket.off();
-            props.setReady(false)
             setUserSocketId(null)
         }
     }, [ENDPOINT, props.location.search])
@@ -94,14 +95,33 @@ const CrazyMain = props => {
         socket.on('roomData', ({users, socket_id}) => {
             setUsers(users)
             setNumUsers(users.length)
+            setOtherPlayers(users.filter((u) => u.username !== props.user.username))
             let creatorIndex = users.findIndex((u) => u.creator === true)
             if(creatorIndex != -1) {
                 setRoomCreator(users[creatorIndex].username)
             }
             setSocketId(socket_id)
             setUserSocketId(socket_id)
+
+            
+            
+            //if(otherPlayers.length + 1 === users.length) return
+            // if(others !== null){
+            //     if(others.length){
+            //         setOtherPlayers(others)
+            //     }
+            // }
+            // else{
+            //     let curIdx = users.findIndex((u) => u.username === username)
+            //     console.log(otherPlayers, 'scree', others)
+            //     for(let i = 0; i < users.length; i++){
+            //         if(curIdx !== -1 && i !== curIdx){
+            //             setOtherPlayers([...otherPlayers, users[i]])
+            //         }
+            //     }
+            // }
         })
-    }, [users, roomCreator])
+    }, [users, otherPlayers])
 
 
     useEffect(() => {
@@ -117,9 +137,9 @@ const CrazyMain = props => {
             setMsgCount(prevCount => prevCount + 1)
         })
 
-        socket.on("roomData", ({ users }) => {
-            setUsers(users)
-        })
+        // socket.on("roomData", ({ users }) => {
+        //     setUsers(users)
+        // })
     }, [msgCount])
 
 
@@ -133,68 +153,13 @@ const CrazyMain = props => {
         }
     }
 
-    // const updateReadyPlayers = (u, r, rp) => {
-    //     if(props.user.ready){
-    //         props.setReady(false)
-    //     }
-    //     else{
-    //         props.setReady(true)
-    //     }
-    //     setReadyPlayers([...readyPlayers, u])
-    //     emitReady(u, r)
-    // }
-
-    const emitReady = (u, r) => {
-        if(u.username === props.user.username){
-            if(props.user.ready){
-                props.setReady(false)
-            }
-            else{
-                props.setReady(true)
-            }
-        }
-        const index = readyPlayers.findIndex((usr) => usr.username === u.username)
-        if(index !== -1){
-            if(users[index].ready){
-                users[index].ready = false
-                setReadyPlayers(readyPlayers.filter(a => a.username !== readyPlayers[index].username))
-                socket.emit('player-ready', u, r, readyPlayers, false)
-            }
-            else{
-                users[index].ready = true
-                setReadyPlayers()
-                socket.emit('player-ready', u, r, readyPlayers, true)
-            }
-        }
-    }
-
-    useEffect(() => {
-        socket.on('ready-up', ({user, rp}) => {
-            const existing = rp.find((u) => u.username === user.username)
-            if(!existing){
-                setReadyPlayers(rp)//[...readyPlayers, user]
-                const existingOther = otherPlayers.find((u) => u.username === user.username)
-                if(!existingOther){
-                    setOtherPlayers([...otherPlayers, user])
-                }
-            }
-            else{
-                const existingOther = otherPlayers.find((u) => u.username === user.username)
-                if(!existingOther){
-                    setOtherPlayers([...otherPlayers, user])
-                }
-            }
-        })
-    }, [readyPlayers])
-
     const startGame = (e) => {
-        e.preventDefault()
         socket.emit('game-started', { user: props.user, users, room, numUsers })
     }
 
     useEffect(() => {
-        socket.on('start-game', ({ bool }) => {
-            setGameStarted(bool)
+        socket.on('start-game', (data) => {
+            setGameStarted(data.bool)
         })
         socket.emit('get-cards')
     }, [])
@@ -207,15 +172,14 @@ const CrazyMain = props => {
                     console.log(`Dealing to: ${data.users[i].username}`)
                     setHand(data.users[i].cards)
                     props.setHand(data.users[i].cards)
-                    setOpponentNumCards(data.users[i].cards.length)
                 }
-                else{
-                    setOpponentNumCards(data.users[i].cards.length)
-                    //TODO remove opponents card data from readyPlayer hook and anywhere else it can be viewed
-                }
+                // else{
+                //     setOpponents([...opponents, data.users[i]])
+                //     //TODO remove opponents card data from readyPlayer hook and anywhere else it can be viewed
+                // }
             }
         })
-    }, [gameStarted])
+    }, [])
 
     useEffect(() => {
         socket.on('updated-deck', (data) => {
@@ -297,7 +261,7 @@ const CrazyMain = props => {
                 <div className="playerListCont">
                     <Drawer {...drawerProps}>
                         <div className="fc-sb-c h-100 w-100">
-                            <PlayerList users={users} readyPlayers={readyPlayers} user={props.user} room={room} emitReady={emitReady} setReady={setReady}/>
+                            <PlayerList users={users} user={props.user} room={room} setReady={setReady}/>
                             <div className="chat-container">
                                 <Paper className="f-sb-c w-100 chat-head" elevation={2}>
                                     <H4>Chat</H4>
@@ -333,7 +297,7 @@ const CrazyMain = props => {
                     <Button icon={playerListOpen ? "double-chevron-left" : "double-chevron-right"} minimal="true" onClick={playerListToggle} className="drawer-button" style={ playerListOpen ? {left: '238px'} : {left: '0px'}}/>
                 </div>
                 <Paper elevation={4} className="gameboard-container h-100" style={playerListOpen ? {width: 'calc(100% - 240px'} : {width: '100%'}}>
-                    <Game user={props.user} numUsers={numUsers} startGame={startGame} gameStarted={gameStarted} otherPlayers={otherPlayers} readyPlayers={readyPlayers} deck={deck} opponentNumCards={opponentNumCards} playerListOpen={playerListOpen}/>
+                    <Game user={props.user} users={users} numUsers={numUsers} otherPlayers={otherPlayers} startGame={startGame} gameStarted={gameStarted} deck={deck} opponents={opponents} playerListOpen={playerListOpen}/>
                 </Paper>
             </div>
         </div>

@@ -31,9 +31,11 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
         //console.log("rooms: " + io.sockets.adapter.rooms)
 
         const availableRooms = getActiveRooms(io.sockets.adapter.rooms);
-        
+        console.log(user.username)
+        console.log(getOthersInRoom(user.room, user.id))
         socket.emit('roomData', { room: user.room, users: getUsersInRoom(user.room), rooms: availableRooms, socket_id: socket.id })
-        socket.broadcast.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room),  rooms: availableRooms, socket_id: socket.id })
+        socket.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room), rooms: availableRooms, socket_id: socket.id })
+        //socket.broadcast.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room), others: null, rooms: availableRooms, socket_id: socket.id })
 
         callback()
     })
@@ -46,8 +48,15 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
         callback()
     })
 
+
+
+    
+
+
+
     socket.on('game-started', (data, callback) => {
         const user = getUser(socket.id)
+        //socket.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room), rooms: availableRooms, socket_id: socket.id })
         io.of(process.env.NAMESPACE).to(user.room).emit('start-game', { bool: true })//send game started to everyone in room with deck
     })
 
@@ -65,18 +74,9 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
         //then broadcast other hands to others and then do validation for which user receives the cards
         //currently tech savvy users (anyone with react dev tools) can view opponents cards as of inital deal,
         //cant make any breaking game changes as of now and cant effect logic
-        socket.emit('deal-cards-on-start', { users: usersWithCards });
+        //socket.emit('deal-cards-on-start', { users: usersWithCards });
+        io.of(process.env.NAMESPACE).to(user.room).emit('deal-cards-on-start', { users: usersWithCards });
         io.of(process.env.NAMESPACE).to(user.room).emit('updated-deck', { deck: updatedDeck })
-    })
-
-    socket.on('player-ready', (u, r, readyPlayers, b) => {
-        console.log(readyPlayers)
-        console.log(b)
-        const user = getUser(socket.id);
-        //socket.emit('ready-up', { user })
-        //socket.broadcast.to(user.room).emit('ready-up', { user })
-        io.in(user.room).emit('ready-up', { user, rp: readyPlayers })
-        callback()
     })
 
     socket.on('bad-path', (qs, callback) => {
