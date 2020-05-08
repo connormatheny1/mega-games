@@ -19,24 +19,16 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
     console.log('socket connect')
     socket.on('join', ({ username, room }, callback) => {
         const { error, user }= addUser({ id: socket.id, username, room })
-
         if(error) return callback(error)
         socket.emit('message', { 
             user: 'admin', 
             text: `${user.username}, welcome to ${user.room}`
         })//lets cur user know theyve joined
         socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.username} has joined`})//lets all other connected users know user above has joined
-
         socket.join(user.room)
-        //console.log("rooms: " + io.sockets.adapter.rooms)
-
         const availableRooms = getActiveRooms(io.sockets.adapter.rooms);
-        console.log(user.username)
-        console.log(getOthersInRoom(user.room, user.id))
         socket.emit('roomData', { room: user.room, users: getUsersInRoom(user.room), rooms: availableRooms, socket_id: socket.id })
         socket.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room), rooms: availableRooms, socket_id: socket.id })
-        //socket.broadcast.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room), others: null, rooms: availableRooms, socket_id: socket.id })
-
         callback()
     })
 
@@ -48,15 +40,8 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
         callback()
     })
 
-
-
-    
-
-
-
     socket.on('game-started', (data, callback) => {
         const user = getUser(socket.id)
-        //socket.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room), rooms: availableRooms, socket_id: socket.id })
         io.of(process.env.NAMESPACE).to(user.room).emit('start-game', { bool: true })//send game started to everyone in room with deck
     })
 

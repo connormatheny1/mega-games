@@ -102,24 +102,6 @@ const CrazyMain = props => {
             }
             setSocketId(socket_id)
             setUserSocketId(socket_id)
-
-            
-            
-            //if(otherPlayers.length + 1 === users.length) return
-            // if(others !== null){
-            //     if(others.length){
-            //         setOtherPlayers(others)
-            //     }
-            // }
-            // else{
-            //     let curIdx = users.findIndex((u) => u.username === username)
-            //     console.log(otherPlayers, 'scree', others)
-            //     for(let i = 0; i < users.length; i++){
-            //         if(curIdx !== -1 && i !== curIdx){
-            //             setOtherPlayers([...otherPlayers, users[i]])
-            //         }
-            //     }
-            // }
         })
     }, [users, otherPlayers])
 

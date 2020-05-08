@@ -32,7 +32,7 @@ const PlayerList = ({ users, user, room, setReady }) => {
 
     const joinClick = (e) => {
         e.preventDefault()
-        console.log(e.currentTarget.dataset.id)
+        console.log(e.currentTarget.id)
 
     }
 

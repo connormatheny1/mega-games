@@ -1095,6 +1095,12 @@ body{
   .log-item:last-child{
     margin: 0;
   }
+
+  .logs p{
+    padding: 7.5px;
+    border-bottom: 1px solid #CED9E0;
+  }
+
   
   /*HELPERS*/
   /*FLEX === === === .f<direction?=c||null>-<justify-content>-<align-items?=fs>*/

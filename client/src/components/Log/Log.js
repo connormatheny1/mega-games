@@ -4,7 +4,8 @@ import {
     Intent,
     Button,
     Collapse,
-    Pre
+    Pre,
+    Code
 } from "@blueprintjs/core"
 const Log = (props) => {
     const toggle = () => {
@@ -18,9 +19,7 @@ const Log = (props) => {
                     {
                         props.data.map((log, i) => (
                             <>
-                                <Pre key={i} className="log-item">
-                                    {log}
-                                </Pre>
+                                <p><code>{log}</code></p>                                    
                             </>
                         ))
                     }
