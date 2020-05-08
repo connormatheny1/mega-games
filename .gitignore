@@ -1,3 +1,5 @@
-.gitignore
-server/.env
-server/create.sql
+/node_modules
+npm-debug.log
+.DS_Store
+/*.env
+/*.sql

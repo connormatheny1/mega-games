@@ -15,7 +15,8 @@ import {
     Popover,
     Menu,
     MenuItem,
-    Elevation
+    Elevation,
+    Intent
 } from "@blueprintjs/core"
 import Collapse from '@material-ui/core/Collapse'
 import Paper from '@material-ui/core/Paper'
@@ -226,11 +227,21 @@ const CrazyMain = props => {
         </Menu>
     )
 
+    const handleLeaveRoom = () => {
+        
+    }
+
     return(
         <div className="gameCont">
             <div className="roomInfoHeader">
                 <div className="left">
                     <H3><span style={{fontWeight: "normal"}}>{room}</span></H3>
+                    <Button 
+                        text="Leave"
+                        icon="cross"
+                        intent={Intent.WARNING}
+                        onClick={handleLeaveRoom}
+                    />
                 </div>
                 <div>
                     { errors ? (errors.toString()) : null }
