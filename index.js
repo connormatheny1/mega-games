@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express')
 const socketio = require("socket.io")
 const http = require('http')
+const path = require("path")
 const bodyParser = require('body-parser')
 const { addUser, removeUser, getUser, getUsersInRoom, getActiveRooms, getOthersInRoom } = require('./utils/users')
 const { createDeck, dealCards } = require('./utils/cards')
