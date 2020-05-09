@@ -93,13 +93,4 @@ app.use(bodyParser.json())
 //app.use('/', indexRouter)
 app.use('/users', userRouter)
 
-
-// if (process.env.NODE_ENV === 'production') {
-//     // Serve any static files
-//     app.use(express.static(path.join(__dirname, 'client/build')));
-  
-//     // Handle React routing, return all requests to React app
-    
-//   }
-
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`))
