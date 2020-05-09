@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './Message.css'
 
+//const ReactEmoji = require('react-emoji')
 import ReactEmoji from 'react-emoji'
 
 const Message = ({ message: { user, text }, username, emojis }) => {

@@ -15,11 +15,7 @@ const io = socketio(server)
 app.set('port', PORT)
 
 app.use(express.urlencoded({extended: true}))
-
 app.use(express.static(path.join(__dirname, './client/build')));
-app.get('*', function(req, res) {
-  res.sendFile(path.join(__dirname, './client/build', 'index.html'));
-});
 
 io.of(process.env.NAMESPACE).on('connection', (socket) => {
     console.log('socket connect')
@@ -90,6 +86,12 @@ const userRouter = require('./routes/userRouter')
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 //app.use('/', indexRouter)
+
 app.use('/users', userRouter)
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+
+app.get('*', function(req, res) {
+  res.sendFile(path.join(__dirname, './client/build', 'index.html'));
+});
+

@@ -60,6 +60,7 @@ const CrazyMain = props => {
     const [readyPlayers, setReadyPlayers] = useState([])
     
 
+    //const ENDPOINT = 'http://localhost:5000/crazy/rooms'
     const ENDPOINT = 'https://mega-games.herokuapp.com/crazy/rooms'
 
     useEffect(() => {
