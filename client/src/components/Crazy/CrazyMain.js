@@ -61,8 +61,8 @@ const CrazyMain = props => {
     
 
     //const ENDPOINT = 'http://localhost:5000/crazy/rooms'
-    const ENDPOINT = 'https://mega-games.herokuapp.com/crazy/rooms'
-
+    const ENDPOINT = '/crazy/rooms'
+    const host = location.origin
     useEffect(() => {
         if(props.location.search.length < 2){
             return socket.emit('bad-path', {qs: props.location.search}, (error) => {
@@ -73,7 +73,7 @@ const CrazyMain = props => {
             })
         }
         const { username, room } = queryString.parse(props.location.search)
-        socket = io(ENDPOINT)
+        socket = io(host, {port: PORT, transports: ["websocket"]})
         setUsername(username)
         setRoom(room)
         

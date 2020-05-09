@@ -12,9 +12,9 @@ const Chat = (props) => {
     const [users, setUsers] = useState('');
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
-    const ENDPOINT = 'http://localhost:5000/crazy/rooms'
+    //const ENDPOINT = 'http://localhost:5000/crazy/rooms'
     //'https://mega-games.herokuapp.com/crazy/rooms'
-
+    
     // useEffect(() => {
     //     const { username, room } = queryString.parse(props.location.search)
     //     socket = io(ENDPOINT)
@@ -56,7 +56,7 @@ const Chat = (props) => {
         e.preventDefault()
         if(message){
             console.log(message)
-            //setMessages([...messages, message])
+            setMessages([...messages, message])
             props.emitSendMessage(e, message)
             setMessage('')
         }

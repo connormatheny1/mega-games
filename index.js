@@ -11,13 +11,24 @@ const PORT = process.env.PORT || 5000
 const app = express();
 const server = http.createServer(app)
 const io = socketio(server)
+const indexRouter = require('./routes/indexRouter')
+const userRouter = require('./routes/userRouter')
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json())
+//app.use('/', indexRouter)
+
+app.use('/users', userRouter)
 
 app.set('port', PORT)
 
-app.use(express.urlencoded({extended: true}))
-app.use(express.static(path.join(__dirname, './client/build')));
+app.use(cors());
 
-io.of(process.env.NAMESPACE).on('connection', (socket) => {
+app.use(express.urlencoded({extended: true}))
+app.use(express.static(path.join(__dirname, 'client/build')));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+
+
+io.of('/crazy/rooms').on('connection', (socket) => {
     console.log('socket connect')
     socket.on('join', ({ username, room }, callback) => {
         const { error, user }= addUser({ id: socket.id, username, room })
@@ -39,12 +50,12 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
         socket.emit('message', { user: user.username, text: message })
         socket.broadcast.to(user.room).emit('message', { user: user.username, text: message })
         socket.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) })
+        callback()
     })
     
-
     socket.on('game-started', (data, callback) => {
         const user = getUser(socket.id)
-        io.of(process.env.NAMESPACE).to(user.room).emit('start-game', { bool: true })//send game started to everyone in room with deck
+        io.of('/crazy/rooms').to(user.room).emit('start-game', { bool: true })//send game started to everyone in room with deck
     })
 
     socket.on('get-cards', (data) => {
@@ -62,8 +73,8 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
         //currently tech savvy users (anyone with react dev tools) can view opponents cards as of inital deal,
         //cant make any breaking game changes as of now and cant effect logic
         //socket.emit('deal-cards-on-start', { users: usersWithCards });
-        io.of(process.env.NAMESPACE).to(user.room).emit('deal-cards-on-start', { users: usersWithCards });
-        io.of(process.env.NAMESPACE).to(user.room).emit('updated-deck', { deck: updatedDeck })
+        io.of('/crazy/rooms').to(user.room).emit('deal-cards-on-start', { users: usersWithCards });
+        io.of('/crazy/rooms').to(user.room).emit('updated-deck', { deck: updatedDeck })
     })
 
     socket.on('bad-path', (qs, callback) => {
@@ -81,17 +92,12 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
     })
 })
 
-const indexRouter = require('./routes/indexRouter')
-const userRouter = require('./routes/userRouter')
-app.use(bodyParser.urlencoded({extended: true}))
-app.use(bodyParser.json())
-//app.use('/', indexRouter)
 
-app.use('/users', userRouter)
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+
+
 
 app.get('*', function(req, res) {
-  res.sendFile(path.join(__dirname, './client/build', 'index.html'));
-});
-
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+  });
+  
