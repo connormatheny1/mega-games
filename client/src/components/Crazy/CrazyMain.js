@@ -63,7 +63,7 @@ const CrazyMain = props => {
     //const ENDPOINT = 'http://localhost:5000/crazy/rooms'
     const ENDPOINT = '/crazy/rooms'
     useEffect(() => {
-        const host = location.origin
+        const host = props.location.origin
         if(props.location.search.length < 2){
             return socket.emit('bad-path', {qs: props.location.search}, (error) => {
                 if(error){
