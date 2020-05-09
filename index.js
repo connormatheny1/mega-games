@@ -16,6 +16,11 @@ app.set('port', PORT)
 
 app.use(express.urlencoded({extended: true}))
 
+app.use(express.static(path.join(__dirname, 'build')));
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
 io.of(process.env.NAMESPACE).on('connection', (socket) => {
     console.log('socket connect')
     socket.on('join', ({ username, room }, callback) => {
@@ -85,7 +90,7 @@ const indexRouter = require('./routes/indexRouter')
 const userRouter = require('./routes/userRouter')
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
-app.use('/', indexRouter)
+//app.use('/', indexRouter)
 app.use('/users', userRouter)
 
 
@@ -94,9 +99,7 @@ app.use('/users', userRouter)
 //     app.use(express.static(path.join(__dirname, 'client/build')));
   
 //     // Handle React routing, return all requests to React app
-//     app.get('*', function(req, res) {
-//       res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-//     });
+    
 //   }
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`))
