@@ -40,6 +40,7 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
         socket.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) })
         callback()
     })
+    
 
     socket.on('game-started', (data, callback) => {
         const user = getUser(socket.id)
