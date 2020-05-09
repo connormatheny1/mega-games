@@ -62,8 +62,8 @@ const CrazyMain = props => {
 
     //const ENDPOINT = 'http://localhost:5000/crazy/rooms'
     const ENDPOINT = '/crazy/rooms'
-    const host = location.origin
     useEffect(() => {
+        const host = location.origin
         if(props.location.search.length < 2){
             return socket.emit('bad-path', {qs: props.location.search}, (error) => {
                 if(error){
@@ -73,7 +73,7 @@ const CrazyMain = props => {
             })
         }
         const { username, room } = queryString.parse(props.location.search)
-        socket = io(host, {port: PORT, transports: ["websocket"]})
+        socket = io(host, {transports: ["websocket"]})
         setUsername(username)
         setRoom(room)
         
