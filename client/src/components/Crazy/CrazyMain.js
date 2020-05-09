@@ -120,16 +120,16 @@ const CrazyMain = props => {
             setMsgCount(prevCount => prevCount + 1)
         })
 
-        // socket.on("roomData", ({ users }) => {
-        //     setUsers(users)
-        // })
+        socket.on("roomData", ({ users }) => {
+            setUsers(users)
+        })
     }, [msgCount])
 
 
     const sendMessage = (e, m) => {
         e.preventDefault()
         if(m){
-            socket.emit('sendMessage', m, () => setMessage(''))
+            socket.emit('sendMessage', m)
         }
         else{
             console.log('no messages')

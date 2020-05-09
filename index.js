@@ -43,7 +43,6 @@ io.of(process.env.NAMESPACE).on('connection', (socket) => {
         socket.emit('message', { user: user.username, text: message })
         socket.broadcast.to(user.room).emit('message', { user: user.username, text: message })
         socket.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) })
-        callback()
     })
     
 
