@@ -49,6 +49,8 @@ io.of('/crazy/rooms').on('connection', (socket) => {
 
     socket.on('sendMessage', (message, callback) => {
         const user = getUser(socket.id)
+        debugger;
+        console.log(user)
         socket.emit('message', { user: user.username, text: message })
         socket.broadcast.to(user.room).emit('message', { user: user.username, text: message })
         socket.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) })
