@@ -21,7 +21,7 @@ const Game = (props) => {
         props.startGame(e);
     }
 
-    console.log(props.otherPlayers)
+    //console.log(props.otherPlayers)
     return(
         <>
             {
