@@ -73,7 +73,7 @@ const CrazyMain = props => {
             })
         }
         const { username, room } = queryString.parse(props.location.search)
-        socket = io(host, {transports: ["websocket"]})
+        socket = io.connect("https://mega-games.herokuapp.com/crazy/rooms")
         setUsername(username)
         setRoom(room)
         
