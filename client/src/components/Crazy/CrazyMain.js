@@ -61,7 +61,7 @@ const CrazyMain = props => {
     
 
     //const ENDPOINT = 'http://localhost:5000/crazy/rooms'
-    const ENDPOINT = '/crazy/rooms'
+    const ENDPOINT = 'https://mega-games.herokuapp.com/crazy/rooms'
     useEffect(() => {
         const host = props.location.origin
         if(props.location.search.length < 2){

@@ -11,7 +11,8 @@ const PORT = process.env.PORT || 5000
 
 const app = express();
 const server = http.createServer(app)
-const io = socketio(server)
+//const io = socketio(server)
+const io = require("socket.io").listen(server)
 const indexRouter = require('./routes/indexRouter')
 const userRouter = require('./routes/userRouter')
 app.use(bodyParser.urlencoded({extended: true}))
@@ -93,12 +94,6 @@ io.of('/crazy/rooms').on('connection', (socket) => {
     })
 })
 
-
-
-
-
-
 app.get('*', function(req, res) {
     res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
   });
-  
