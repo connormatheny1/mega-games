@@ -1,5 +1,5 @@
 const users = []
-
+let existed = 0;
 const addUser = ({ id, username, room }) => {
     username = username.replace(/\s/g, "").toLowerCase()
     room = room.replace(/\s/g, "").toLowerCase()
@@ -8,7 +8,10 @@ const addUser = ({ id, username, room }) => {
     const existingUser = users.find((user) => user.room === room && user.username === username)
 
     if(existingUser){
-        return { error: 'Username taken'}
+        let newn = `${username}-${existed}`
+        user = {id, newn, room, creator: true}
+        users.push(user)
+        //return { error: 'Username taken'}
     }
 
     if(users.length < 1){

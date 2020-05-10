@@ -66,7 +66,7 @@ const CrazyMain = props => {
         const host = props.location.origin
         socket = io.connect("https://mega-games.herokuapp.com/crazy/rooms")
         if(props.location.search.length < 2){
-            return socket.emit('bad-path', {qs: props.location.search}, (error) => {
+            socket.emit('bad-path', {qs: props.location.search}, (error) => {
                 if(error){
                     alert(error)
                     window.location.href = "/crazy/rooms"
