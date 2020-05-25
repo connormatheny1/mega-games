@@ -31,6 +31,7 @@ const CrazyMain = props => {
                 + currentdate.getHours() + ":"  
                 + currentdate.getMinutes() + ":" 
                 + currentdate.getSeconds();
+
     const [username, setUsername] = useState('')
     const [room, setRoom] = useState('')
     const [users, setUsers] = useState()
@@ -53,15 +54,18 @@ const CrazyMain = props => {
     const [opponents, setOpponents] = useState([])
     const [player, setPlayer] = useState(props.user)
     const [currentTurnIndex, setCurrentTurnIndex] = useState(0)
-    const [playDirection, setPlayerDirection] = useState(true)//true = clockwise, false = counter clockwise
+    const [currentCard, setCurrentCard] = useState()
+    const [playedCard, setPlayedCard] = useState()
+    const [playDirection, setPlayDirection] = useState(true)//true = positive, false = negative
     const [lastMove, setLastMove] = useState({player: {}, cardPlayed: {}, turnTo: {}})
+    const [newCard, setNewCard] = useState()
     const size = useWindowSize()
 
     const [readyPlayers, setReadyPlayers] = useState([])
-    
-
-    //const ENDPOINT = 'http://localhost:5000/crazy/rooms'
-    const ENDPOINT = 'https://mega-games.herokuapp.com/crazy/rooms'
+    let ENDPOINT = 'https://mega-games.herokuapp.com/crazy/rooms'
+    if (process.env.NODE_ENV !== 'production') {
+        ENDPOINT = 'http://localhost:5000/crazy/rooms'
+    }
     useEffect(() => {
         const host = props.location.origin
         socket = io.connect(ENDPOINT)
@@ -149,7 +153,6 @@ const CrazyMain = props => {
         socket.emit('get-cards')
     }, [])
 
-
     useEffect(() => {
         socket.on('deal-cards-on-start', (data) => {
             for(let i = 0; i < data.users.length; i++){
@@ -171,7 +174,85 @@ const CrazyMain = props => {
             setDeck(data.deck)
         })
     }, [deck])
-    
+
+    const playCard = (e, value, color, special, id) => {
+        e.preventDefault()
+        let username = props.user.username
+        if(!special){
+            let nextTurnIndex = getNextTurnIndex(currentTurnIndex)
+            let idx = id.substring(id.length - 1)
+            let int = parseInt(idx)
+            console.log(idx)
+            console.log(int)
+            socket.emit("reg-card-played", { value, color, special, username, room, nextTurnIndex, deck, hand, int })
+        }
+        else{
+            //add reverse condition
+            let nextTurnIndex = getNextTurnIndex(currentTurnIndex)
+            socket.emit("special-card-played", { value, color, special, username, room, nextTurnIndex })
+        }
+    }
+
+    useEffect(() => {
+        socket.on('update-after-card-played', (data) => {
+            console.log(data)
+            let obj = {
+                color: data.color,
+                special: data.special, 
+                val: data.value
+            }
+            setNewCard(obj)
+            setCurrentTurnIndex(data.nextTurnIndex)
+        })
+
+        socket.on('update-users-hand', (data) => {
+            console.log(hand)
+            if(data.username === props.user.username){
+                setHand(data.hand)
+                props.setHand(data.hand)
+            }
+        })
+    }, [currentTurnIndex])
+
+    function getNextTurnIndex(current){
+        let retval;
+        if(playDirection){
+            if(current === numUsers - 1 ){
+                retval = 0
+            }
+            else{
+                retval = current + 1
+            }
+        }
+        else{
+            if(current === 0){
+                retval = numUsers - 1
+            }
+            else{
+                retval = current - 1
+            }
+        }
+        return retval
+    }
+
+    //state mutators
+    const chatToggle = () => {
+        setIsChatOpen(!isChatOpen)
+        setChatIcon(!chatIcon)
+    }
+ 
+    const playerListToggle = () => {
+        let b = !playerListOpen
+        setPlayerListOpen(b)
+        setPlayerListIcon(b)
+    }
+
+    const ChatMenu = () => (
+        <Menu>
+            <MenuItem text={emojis ? "Disable chat emojies" : "Enable chat emojies"} icon={emojis ? "cross" : "add"} onClick={cogToggle}/>
+        </Menu>
+    )
+
     const dialogHeader = () => (
         <div className={Classes.DIALOG_HEADER}>
             <H5 className="dialogHead" style={{fontWeight:'normal'}}>
@@ -185,27 +266,14 @@ const CrazyMain = props => {
         </div> 
     )
 
-    const chatToggle = () => {
-        setIsChatOpen(!isChatOpen)
-        setChatIcon(!chatIcon)
-    }
- 
-    const playerListToggle = () => {
-        let b = !playerListOpen
-        setPlayerListOpen(b)
-        setPlayerListIcon(b)
-    }
-
-    const setUserSocketId = (s) => {
-        props.setUserSocketId(s)
-    }
-
-    const cogToggle = () => {
-        setEmojis(!emojis)
-    }
-
-    const setReady = (v) => {
-        props.setReady(v)
+    const setUserSocketId = (s) => { props.setUserSocketId(s) }
+    const cogToggle = () => { setEmojis(!emojis) }
+    const setReady = (v) => { props.setReady(v) }
+    const handleLeaveRoom = () => {}
+    function rng(n, x) {
+        n = Math.ceil(n)
+        x = Math.floor(x)
+        return Math.floor(Math.random() * (x - n + 1)) + n
     }
 
     const drawerProps = {
@@ -223,40 +291,36 @@ const CrazyMain = props => {
         canEscapeKeyClose: false
     }
 
-    const ChatMenu = () => (
-        <Menu>
-            <MenuItem text={emojis ? "Disable chat emojies" : "Enable chat emojies"} icon={emojis ? "cross" : "add"} onClick={cogToggle}/>
-        </Menu>
-    )
-
-    const handleLeaveRoom = () => {
-
-    }
-
     return(
         <div className="gameCont">
             <div className="roomInfoHeader">
                 <div className="left">
                     <H3><span style={{fontWeight: "normal"}}>{room}</span></H3>
-                    <Button 
-                        text="Leave"
-                        icon="cross"
-                        intent={Intent.WARNING}
-                        onClick={handleLeaveRoom}
-                    />
+                    <span className="created-by"><Icon icon="new-person"/>Created by:&nbsp;<b>{roomCreator ? roomCreator : ( users ? users[0].username : props.user.username )}</b></span>
+                    <span>Players in room: <b>{ users ? users.length : null }</b></span>
                 </div>
                 <div>
                     { errors ? (errors.toString()) : null }
                 </div>
                 <div className="right">
-                    <span><Icon icon="new-person"/>Created by:&nbsp;<b>{roomCreator ? roomCreator : ( users ? users[0].username : props.user.username )}</b></span>
+                    <Button 
+                        text="Leave"
+                        icon="cross"
+                        intent={Intent.WARNING}
+                        onClick={handleLeaveRoom}
+                        className="leave-room-btn"
+                    />
                 </div>
             </div>
             <div className="gameBody">
                 <div className="playerListCont">
                     <Drawer {...drawerProps}>
                         <div className="fc-sb-c h-100 w-100">
-                            <PlayerList users={users} user={props.user} room={room} setReady={setReady}/>
+                            <PlayerList users={users} user={props.user} room={room} setReady={setReady} currentTurnIndex={currentTurnIndex} />
+                            <div className="game-info">
+                                <H5>Game Info</H5>
+                                <span><b>Current turn:</b>{users && gameStarted ? users[currentTurnIndex].username : null}</span>
+                            </div>
                             <div className="chat-container">
                                 <Paper className="f-sb-c w-100 chat-head" elevation={2}>
                                     <H4>Chat</H4>
@@ -292,7 +356,21 @@ const CrazyMain = props => {
                     <Button icon={playerListOpen ? "double-chevron-left" : "double-chevron-right"} minimal="true" onClick={playerListToggle} className="drawer-button" style={ playerListOpen ? {left: '238px'} : {left: '0px'}}/>
                 </div>
                 <Paper elevation={4} className="gameboard-container h-100" style={playerListOpen ? {width: 'calc(100% - 240px'} : {width: '100%'}}>
-                    <Game user={props.user} users={users} numUsers={numUsers} otherPlayers={otherPlayers} startGame={startGame} gameStarted={gameStarted} deck={deck} opponents={opponents} playerListOpen={playerListOpen}/>
+                    <Game
+                        user={props.user}
+                        users={users}
+                        numUsers={numUsers}
+                        otherPlayers={otherPlayers}
+                        startGame={startGame}
+                        gameStarted={gameStarted}
+                        deck={deck}
+                        opponents={opponents}
+                        playerListOpen={playerListOpen}
+                        currentTurnIndex={currentTurnIndex}
+                        playDirection={playDirection}
+                        playCard={playCard}
+                        newCard={newCard}
+                    />
                 </Paper>
             </div>
         </div>

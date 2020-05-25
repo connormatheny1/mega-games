@@ -7,6 +7,7 @@ import {
     Pre,
     Code
 } from "@blueprintjs/core"
+import P from '../client-utils/P'
 const Log = (props) => {
     const toggle = () => {
         props.toggleLog(!props.logOpen)
@@ -18,9 +19,9 @@ const Log = (props) => {
                 <ScrollToBottom>
                     {
                         props.data.map((log, i) => (
-                            <>
+                            <div key={i}>
                                 <p><code>{log}</code></p>                                    
-                            </>
+                            </div>
                         ))
                     }
                 </ScrollToBottom>

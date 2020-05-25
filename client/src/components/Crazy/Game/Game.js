@@ -10,25 +10,43 @@ import {
     Intent,
     Button,
 } from "@blueprintjs/core"
+
 const Game = (props) => {
     const [started, setStarted] = useState();
     const [me, setMe] = useState(props.user)
-    
     const { numUsers } = props
+
     const startGame = (e) => {
         e.preventDefault()
         setStarted(true)
         props.startGame(e);
     }
 
-    //console.log(props.otherPlayers)
+    const playCard = (e, value, color, special, id) => {
+        e.preventDefault()
+        props.playCard(e, value, color, special, id)
+    }
+
     return(
         <>
             {
                 props.gameStarted ? (
-                    <GameBoard users={props.users} otherPlayers={props.otherPlayers} playerListOpen={props.playerListOpen} numUsers={numUsers} gameStarted={props.gameStarted} user={props.user} deck={props.deck} opponents={props.opponents}/>
+                    <GameBoard 
+                        users={props.users}
+                        otherPlayers={props.otherPlayers}
+                        playerListOpen={props.playerListOpen}
+                        numUsers={numUsers}
+                        gameStarted={props.gameStarted}
+                        user={props.user}
+                        deck={props.deck}
+                        opponents={props.opponents}
+                        currentTurnIndex={props.currentTurnIndex}
+                        playDirection={props.playDirection}
+                        playCard={playCard}
+                        newCard={props.newCard}
+                    />
                 ) : (//=== props.readyPlayers.length
-                    numUsers ? (
+                    numUsers > 1 ? (
                         <Button
                             text="Start a game"
                             icon="tick"

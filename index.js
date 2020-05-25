@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express')
-const socketio = require("socket.io")
 const http = require('http')
 const cors = require('cors')
 const path = require("path")
@@ -8,27 +7,20 @@ const bodyParser = require('body-parser')
 const { addUser, removeUser, getUser, getUsersInRoom, getActiveRooms, getOthersInRoom } = require('./utils/users')
 const { createDeck, dealCards } = require('./utils/cards')
 const PORT = process.env.PORT || 5000
-
 const app = express();
 const server = http.createServer(app)
-//const io = socketio(server)
 const io = require("socket.io").listen(server)
 const indexRouter = require('./routes/indexRouter')
 const userRouter = require('./routes/userRouter')
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 //app.use('/', indexRouter)
-
 app.use('/users', userRouter)
-
 app.set('port', PORT)
-
 app.use(cors());
-
 app.use(express.urlencoded({extended: true}))
 app.use(express.static(path.join(__dirname, 'client/build')));
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`))
-
 
 io.of('/crazy/rooms').on('connection', (socket) => {
     console.log('socket connect')
@@ -77,6 +69,39 @@ io.of('/crazy/rooms').on('connection', (socket) => {
         io.of('/crazy/rooms').to(user.room).emit('deal-cards-on-start', { users: usersWithCards });
         io.of('/crazy/rooms').to(user.room).emit('updated-deck', { deck: updatedDeck })
     })
+
+    /**
+     * Gameplay
+     */
+
+    socket.on('reg-card-played', (data) => {
+        const { value, color, special, username, room, nextTurnIndex, deck, hand, int } = data
+        //console.log(value) ; console.log(color) ; console.log('not special')
+        hand.splice(int, 1)
+        console.log(hand)
+        io.of('/crazy/rooms').to(room).emit('update-after-card-played', 
+            { value, color, special, username, room, nextTurnIndex, hand }
+        )
+        io.of('/crazy/rooms').to(room).emit('update-users-hand', { hand, username });
+    })
+
+    socket.on('special-card-played', (data) => {
+        const { value, color, special, username, room, nextTurnIndex } = data
+        console.log(value)
+        console.log(color)
+        console.log('special')
+        socket.to(room).emit('update-after-card-played')
+    })
+
+
+    /**
+     * Game log 
+     */
+
+
+
+
+
 
     socket.on('bad-path', (qs, callback) => {
         const user = getUser(socket.id)

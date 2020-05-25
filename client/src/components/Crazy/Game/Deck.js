@@ -4,6 +4,7 @@ import Card from '../../client-utils/Card'
 const Deck = (props) => {
     const [needCards, setNeedCards] = useState(false)
     const [gameStarted, setGameStarted] = useState(props.gameStarted)
+    const [newCard, setNewCard] = useState()//props.newCard
     const { numUsers } = props
 
     function createDeck () {
@@ -47,6 +48,16 @@ const Deck = (props) => {
         return cards
     }
 
+    // useEffect(() => {
+    //     if(props.newCard){
+    //         setNewCard(props.newCard)
+    //     }
+    // }, [newCard])
+
+    const playCard = (e) => {
+        props.playCard(e)
+    }
+
     return(
         <>
             <div className="deck-container">
@@ -59,8 +70,8 @@ const Deck = (props) => {
                 }
             </div>
             <div className="played-cards-container">
-                <Card className={`current-card ${props.currentCard[0].color}`} id={`current-card-id`}>
-                    <p>{props.currentCard[0].val}</p>
+                <Card className={`current-card ${props.newCard ? props.newCard.color : props.currentCard[0].color}`} id={`current-card-id`} playCard={playCard}>
+                    <p>{props.newCard ? props.newCard.val : props.currentCard[0].val}</p>
                 </Card>
             </div>
         </>

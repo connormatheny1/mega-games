@@ -518,21 +518,33 @@ body{
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    width: 50%;
     height: 100%;
   }
-  
-  .roomInfoHeader .left > *{
-    margin: 0!important;
-    padding: 0!important;
+
+  .roomInfoHeader .left h3, .roomInfoHeader .left .created-by{
+    margin: 0 40px 0 0!important;
+  }
+
+  .created-by{
+    display: flex;
+  }
+
+  .created-by .new-person{
+    margin-right: 5px;
   }
   
   .roomInfoHeader .right{
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    width: 60%;
     height: 100%;
+  }
+
+  .leave-room-btn{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1px 7px 2px;
   }
   
   .roomInfoHeader .right span{
@@ -595,8 +607,8 @@ body{
     padding: 4px 8px;
   }
   
-  .gameBody .playerListCont .bp3-icon-double-chevron-left{
-    color: #0E5A8A;
+  .gameBody .playerListCont .bp3-icon-double-chevron-left, .gameBody .playerListCont .bp3-icon-double-chevron-right{
+    color: #fff;
   }
   
   .playerListComp{
@@ -604,9 +616,19 @@ body{
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    padding: 10px;
+    padding: 10px 15px;
     box-sizing: border-box;
-    height: 40%;
+    width: 100%;
+    max-height: 400px;
+    border-bottom: 1px solid #D8E1E8;
+  }
+
+  .game-info{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 10px 15px;
     width: 100%;
   }
   
@@ -643,12 +665,17 @@ body{
     margin-bottom: 10px;
     border: 1px solid #d7d7d7;
   }
+
   .player-list-item > div:first-child{
     height: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     width: 45%;
+  }
+
+  .player-list-item > div:first-child img{
+    margin-right: 10px;
   }
   
   .gameBody .playerListCont .player-list-item .joinButton{
@@ -775,7 +802,7 @@ body{
     width: 100%;
     height: 100%;
     min-height: 100%;
-    padding: 10px;
+    padding: 10px 10px 5px;
     display: flex;
   }
 
@@ -920,26 +947,6 @@ body{
     position: relative;
   }
 
-  .red{
-    background-color: #c23030;
-  }
-
-  .blue{
-    background-color: #106ba3;
-  }
-
-  .green{
-    background-color: #0d8050;
-  }
-
-  .orange{
-    background-color: #bf7326;
-  }
-
-  .nocolor{
-    background-color: #738694;
-  }
-
   .current-card{
     z-index: 1;
   }
@@ -948,7 +955,7 @@ body{
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 28%;
+    height: 30%;
     justify-content: space-between;
     align-items: center;
   }
@@ -1101,6 +1108,97 @@ body{
     border-bottom: 1px solid #CED9E0;
   }
 
+  .my-game-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .my-game-info .me{
+    width: 375px;
+    height: 60px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border: 1px solid #D8E1E8;
+    border-radius: 6px;
+    padding: 0;
+  }
+
+  .me img{
+    margin-right: 10px;
+  }
+
+  .game-info-name{
+    color: #fff;
+    font-weight: bold;
+  }
+
+  .me > div{
+    width: 33%;
+    height: 100%;
+  }
+
+  .me .me-cont{
+    box-sizing: border-box;
+    padding: 10px;
+    border-right: 1px solid #D8E1E8;
+  }
+
+  .me .me-cont img{
+    margin-right: 7px;
+  }
+
+  .me .wins{
+    padding: 10px;
+    height: 100%;
+    border-right: 1px solid #d8e1e8;
+  }
+
+  .me .wins span{
+    width: 90px;
+    text-align: left;
+  }
+
+  .wins span{
+    color: #fff;
+  }
+
+  .me .turns{
+    padding: 10px;
+    height: 100%;
+  }
+
+  .user-turn-indicator{
+    width: 100%;
+    height: 100%;
+    font-weight: bold;
+    color: #fff;
+    font-size: 14px;
+  }
+
+  .user-turn-indicator span{
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .user-not-turn{
+    margin-right: 5px;
+  }
+
+  .your-cards-2-cont .playable{
+    bottom: 20px;
+    cursor: pointer;
+  }
+
+  .your-cards-2-cont .unplayable{
+    opacity: .6;
+  }
   
   /*HELPERS*/
   /*FLEX === === === .f<direction?=c||null>-<justify-content>-<align-items?=fs>*/
@@ -1108,6 +1206,18 @@ body{
   .f-sb-c{
     display: flex;
     justify-content: space-between;
+    align-items: center;
+  }
+
+  .f-fs-c{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .f-c-c{
+    display: flex;
+    justify-content: center;
     align-items: center;
   }
 
@@ -1137,6 +1247,10 @@ body{
     align-items: center;
   }
 
+  .f-g-1{
+    flex-grow: 1;
+  }
+
   /*HEIGHT*/
   .h-100{
     height: calc(100vh - 90px);
@@ -1163,6 +1277,27 @@ body{
     width: 30%;
   }
 
+  /*COLORS*/
+  .red{
+    background-color: #c23030;
+  }
+
+  .blue{
+    background-color: #106ba3;
+  }
+
+  .green{
+    background-color: #0d8050;
+  }
+
+  .orange{
+    background-color: #bf7326;
+  }
+
+  .nocolor{
+    background-color: #738694;
+  }
+
   @media only screen and (max-width: 998px){
     .roomCont{
       flex-direction: column;
@@ -1175,13 +1310,13 @@ body{
     }
 
     .your-cards-2{
-      justify-content: flex-end;
+      justify-content: center;
     }
 
-    .card{
+    /* .card{
       height: 130px;
       width: 83px;
-    }
+    } */
   }
 
   @media only screen and (max-width: 768px){

@@ -1,55 +1,28 @@
 import React, { useState, useEffect } from 'react'
 
 const Card = ( props ) => {
-    const overlapLogic = (i, isUser) => {
+    
+    let classes = props.className;
 
-        /*if(.your-cards width is #of cards * 105 or less)
-            we know the last card in list has wrapped
-            how many have wrapped
-                h = take initial width from the first line here,
-                c = current width of ele
-                h - c = say             
-        
-        */        
+    if(props.playable){
+        classes += " playable"
+    }
+    else{
+        classes += " unplayable"
+    }
 
-
-        // let retval
-        // if(isUser){
-        //     const num = props.user.hand.length
-        //     const isEven = num % 2 === 0
-        //     let firstHalf, secondHalf, half, px
-
-        //     if(isEven){
-        //         half = num / 2
-        //     }
-        //     else{
-        //         half = Math.round(num / 2)
-        //     }
-        //     if(i < half){
-        //         let diff = half - i
-        //         if(diff <= 1){
-        //             retval = {zIndex: i, left: '2.5%'}
-        //             return retval
-        //         }
-        //         let tmp = ( (diff - 1) * 3.75 ) + 2.5
-        //         retval = {zIndex: i, left: `${tmp}%`}
-        //     }
-        //     else{
-
-        //         let diff = i - half
-        //         if(diff < 1){
-        //             retval = {zIndex: i, right: '1.25%'}
-        //             return retval
-        //         }
-        //         let tmp = ( (diff * 3.75) + 1.25 )
-        //         retval = {zIndex: i, right: `${tmp}%`}
-        //     }
-        //     return retval
-        // }
+    const handleCardClick = (e, value, color, special, id) => {
+        e.preventDefault()
+        if(props.playable){
+            props.playCard(e, value, color, special, id)
+        }
+        else{
+            console.log('card is unplayable')
+        }
     }
 
     return(
-        <div className={props.className} id={props.id} style={props.style}>
+        <div className={classes} id={props.id} style={props.style} onClick={(e) => handleCardClick(e, props.value, props.color, props.special, props.id)}>
             {props.children}
         </div>
     )
@@ -112,3 +85,50 @@ export default Card
     }
 }, [size.width, pOpen])
 */
+
+// const overlapLogic = (i, isUser) => {
+
+//     /*if(.your-cards width is #of cards * 105 or less)
+//         we know the last card in list has wrapped
+//         how many have wrapped
+//             h = take initial width from the first line here,
+//             c = current width of ele
+//             h - c = say             
+    
+//     */        
+
+
+//     // let retval
+//     // if(isUser){
+//     //     const num = props.user.hand.length
+//     //     const isEven = num % 2 === 0
+//     //     let firstHalf, secondHalf, half, px
+
+//     //     if(isEven){
+//     //         half = num / 2
+//     //     }
+//     //     else{
+//     //         half = Math.round(num / 2)
+//     //     }
+//     //     if(i < half){
+//     //         let diff = half - i
+//     //         if(diff <= 1){
+//     //             retval = {zIndex: i, left: '2.5%'}
+//     //             return retval
+//     //         }
+//     //         let tmp = ( (diff - 1) * 3.75 ) + 2.5
+//     //         retval = {zIndex: i, left: `${tmp}%`}
+//     //     }
+//     //     else{
+
+//     //         let diff = i - half
+//     //         if(diff < 1){
+//     //             retval = {zIndex: i, right: '1.25%'}
+//     //             return retval
+//     //         }
+//     //         let tmp = ( (diff * 3.75) + 1.25 )
+//     //         retval = {zIndex: i, right: `${tmp}%`}
+//     //     }
+//     //     return retval
+//     // }
+// }
