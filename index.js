@@ -75,15 +75,28 @@ io.of('/crazy/rooms').on('connection', (socket) => {
      */
 
     socket.on('reg-card-played', (data) => {
-        const { value, color, special, username, room, nextTurnIndex, deck, hand, int } = data
+        const { value, color, special, username, room, nextTurnIndex, deck, hand, int, users } = data
         //console.log(value) ; console.log(color) ; console.log('not special')
         hand.splice(int, 1)
-        console.log(hand)
         io.of('/crazy/rooms').to(room).emit('update-after-card-played', 
-            { value, color, special, username, room, nextTurnIndex, hand }
+            { value, color, special, username, room, nextTurnIndex, hand, users }
         )
         io.of('/crazy/rooms').to(room).emit('update-users-hand', { hand, username });
     })
+
+
+    socket.on('eight-played', (data) => {
+        const { color, username, room, nextTurnIndex, deck, hand, int, users } = data
+        hand.splice(int, 1)
+        io.of('/crazy/rooms').to(room).emit('update-after-card-played', 
+            { value: 8, color, special: true, username, room, nextTurnIndex, hand, users }
+        )
+        io.of('/crazy/rooms').to(room).emit('update-users-hand', { hand, username });
+    })
+
+
+
+
 
     socket.on('special-card-played', (data) => {
         const { value, color, special, username, room, nextTurnIndex } = data
@@ -94,14 +107,11 @@ io.of('/crazy/rooms').on('connection', (socket) => {
     })
 
 
+
+
     /**
      * Game log 
      */
-
-
-
-
-
 
     socket.on('bad-path', (qs, callback) => {
         const user = getUser(socket.id)

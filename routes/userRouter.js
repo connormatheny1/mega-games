@@ -7,6 +7,8 @@ router.get('/', (req, res) => {
     res.send('user base get good')
 })
 
+//router.get<3
+
 router.post('/register', async (req, res) => {
     const { username, email, avatar, password, passwordConf } = req.body
     const usernameParam = [username]

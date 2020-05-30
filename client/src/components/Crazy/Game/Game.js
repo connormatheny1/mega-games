@@ -27,6 +27,32 @@ const Game = (props) => {
         props.playCard(e, value, color, special, id)
     }
 
+    const playSpecialCard = (e, value, color, special, id) => {
+        e.preventDefault()
+        props.playSpecialCard(e, value, color, special, id)
+    }
+
+    const handleBlue = () => {
+        props.handleBlue()
+    }
+
+    const handleGreen = () => {
+        props.handleGreen()
+    }
+
+    const handleOrange = () => {
+        props.handleOrange()
+    }
+
+    const handleRed = () => {
+        props.handleRed()
+    }
+
+    const showEightModal = (e) => {
+        e.preventDefault()
+        props.showEightModal(e)
+    }
+
     return(
         <>
             {
@@ -43,7 +69,14 @@ const Game = (props) => {
                         currentTurnIndex={props.currentTurnIndex}
                         playDirection={props.playDirection}
                         playCard={playCard}
+                        playSpecialCard={playSpecialCard}
                         newCard={props.newCard}
+                        eightModalOpen={props.eightModalOpen}
+                        showEightModal={showEightModal}
+                        handleBlue={handleBlue}
+                        handleOrange={handleOrange}
+                        handleRed={handleRed}
+                        handleGreen={handleGreen}
                     />
                 ) : (//=== props.readyPlayers.length
                     numUsers > 1 ? (

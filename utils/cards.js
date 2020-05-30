@@ -7,7 +7,7 @@ const createDeck = (numUsers) => {
     for(let i = 0; i < colors.length; i++){
         for(let j = 1; j <= 10; j++){
             let currCard
-            if(i != 8){
+            if(j != 8){
                 currCard = { val: j, color: colors[i], special: false }
             }
             else{

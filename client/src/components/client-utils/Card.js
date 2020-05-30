@@ -14,7 +14,13 @@ const Card = ( props ) => {
     const handleCardClick = (e, value, color, special, id) => {
         e.preventDefault()
         if(props.playable){
-            props.playCard(e, value, color, special, id)
+            if(!special){
+                props.playCard(e, value, color, special, id)
+            }
+            else{
+                props.playSpecialCard(e, value, color, special, id)
+            }
+            
         }
         else{
             console.log('card is unplayable')

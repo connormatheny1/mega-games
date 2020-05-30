@@ -3,6 +3,7 @@ import Deck from './Deck'
 import numWords from 'num-words'
 import Card from '../../client-utils/Card'
 import OpponentCard from '../../client-utils/OpponentCard'
+import EightModal from '../Game/EightModal'
 import { removeUser } from '../../client-utils/users'
 import {
     Icon,
@@ -67,7 +68,53 @@ const GameBoard = (props) => {
             special: special, 
             val: value
         }])
-        
+    }
+
+    const playSpecialCard = (e, value, color, special, id) => {
+        e.preventDefault()
+        setFirstCard(false)
+        props.playSpecialCard(e, value, color, special, id)
+    }
+
+    const handleBlue = () => {
+        props.handleBlue()
+        setCurrentCard([{
+            color: 'blue',
+            special: true, 
+            val: 8
+        }])
+    }
+
+    const handleGreen = () => {
+        props.handleGreen()
+        setCurrentCard([{
+            color: 'green',
+            special: true, 
+            val: 8
+        }])
+    }
+
+    const handleOrange = () => {
+        props.handleOrange()
+        setCurrentCard([{
+            color: 'orange',
+            special: true, 
+            val: 8
+        }])
+    }
+
+    const handleRed = () => {
+        props.handleRed()
+        setCurrentCard([{
+            color: 'red',
+            special: true, 
+            val: 8
+        }])
+    }
+
+    const showEightModal = (e) => {
+        e.preventDefault()
+        props.showEightModal(e)
     }
 
     // useEffect(() => {
@@ -169,11 +216,11 @@ const GameBoard = (props) => {
                                         parsedValLg = <Icon icon="add" intent={intentColor} iconSize={28} className="card-icon"/>
                                         break;
                                     case 'reverse':
-                                        parsedValSm = 'Reverse'
+                                        parsedValSm = 'reverse'
                                         parsedValLg = <Icon icon="reset" intent={intentColor} iconSize={28} className="card-icon"/>
                                         break;
                                     case 'skip':
-                                        parsedValSm = 'Skip'
+                                        parsedValSm = 'skip'
                                         parsedValLg = <Icon icon="disable" intent={intentColor} iconSize={28} className="card-icon"/>
                                         break;
                                     case 8:
@@ -193,7 +240,7 @@ const GameBoard = (props) => {
                                     cur = props.newCard
                                 }
                                 try{
-                                    if(card.val === cur.val || card.color === cur.color || card.val === 8){
+                                    if(card.val === cur.val || card.color === cur.color || card.val === 8 || card.val === "draw4"){
                                         playable = true
                                         playableCards++
                                     }
@@ -205,7 +252,6 @@ const GameBoard = (props) => {
                                     console.log(e.message)
                                 }
                                 
-
                                 if(i === (props.user.hand.length - 1)){
                                     
                                 }
@@ -220,9 +266,11 @@ const GameBoard = (props) => {
                                         user={props.user}
                                         playerListOpen={props.playerListOpen}
                                         playCard={playCard}
+                                        playSpecialCard={playSpecialCard}
                                         value={parsedValSm}
                                         color={card.color}
                                         special={card.special}
+                                        showEightModal={props.showEightModal}
                                     >
                                         <div className="card-inner" style={{backgroundColor: hexVal}}>
                                             <p className="card-val-left">{parsedValSm}</p>
@@ -266,6 +314,13 @@ const GameBoard = (props) => {
                     </div>
 
                 </div>
+                <EightModal
+                    open={props.eightModalOpen}
+                    handleBlue={handleBlue}
+                    handleOrange={handleOrange}
+                    handleRed={handleRed}
+                    handleGreen={handleGreen}
+                />
             </div>
         </div>
     )

@@ -38,7 +38,7 @@ const CrazyMain = props => {
     const [otherPlayers, setOtherPlayers] = useState()
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
-    const [playerListOpen, setPlayerListOpen] = useState(true)
+    const [playerListOpen, setPlayerListOpen] = useState(false)
     const [playerListIcon, setPlayerListIcon] = useState(true)
     const [numUsers, setNumUsers] = useState(0);
     const [roomCreator, setRoomCreator] = useState('');
@@ -57,10 +57,12 @@ const CrazyMain = props => {
     const [currentCard, setCurrentCard] = useState()
     const [playedCard, setPlayedCard] = useState()
     const [playDirection, setPlayDirection] = useState(true)//true = positive, false = negative
-    const [lastMove, setLastMove] = useState({player: {}, cardPlayed: {}, turnTo: {}})
+    const [lastMove, setLastMove] = useState({player: null, cardPlayed: null, turnTo: null})
     const [newCard, setNewCard] = useState()
+    const [eightModalOpen, setEightModalOpen] = useState(false)
+    const [eightChangedColor, setEightChangedColor] = useState(false)
+    const [eightId, setEightId] = useState(null)
     const size = useWindowSize()
-
     const [readyPlayers, setReadyPlayers] = useState([])
     let ENDPOINT = 'https://mega-games.herokuapp.com/crazy/rooms'
     if (process.env.NODE_ENV !== 'production') {
@@ -178,19 +180,73 @@ const CrazyMain = props => {
     const playCard = (e, value, color, special, id) => {
         e.preventDefault()
         let username = props.user.username
-        if(!special){
-            let nextTurnIndex = getNextTurnIndex(currentTurnIndex)
-            let idx = id.substring(id.length - 1)
-            let int = parseInt(idx)
-            console.log(idx)
-            console.log(int)
-            socket.emit("reg-card-played", { value, color, special, username, room, nextTurnIndex, deck, hand, int })
+        let nextTurnIndex = getNextTurnIndex(currentTurnIndex)
+        let idx = id.substring(id.length - 1)
+        let int = parseInt(idx)
+        socket.emit("reg-card-played", { value, color, special, username, room, nextTurnIndex, deck, hand, int, users })
+    }
+
+    const playSpecialCard = (e, value, color, special, id) => {
+        //add reverse condition
+        let nextTurnIndex = getNextTurnIndex(currentTurnIndex)
+        console.log(value)
+        if(value == 8){
+            setEightModalOpen(true)
+            setEightId(id)
+        }
+        else if(value === "reverse"){
+
+        }
+        else if(value === "draw2"){
+
+        }
+        else if(value === "draw4"){
+
         }
         else{
-            //add reverse condition
-            let nextTurnIndex = getNextTurnIndex(currentTurnIndex)
-            socket.emit("special-card-played", { value, color, special, username, room, nextTurnIndex })
+            return
         }
+        //socket.emit("special-card-played", { value, color, special, username, room, nextTurnIndex })
+    }
+
+    const handleBlue = () => {
+        let username = props.user.username
+        let nextTurnIndex = getNextTurnIndex(currentTurnIndex)
+        let idx = eightId.substring(eightId.length - 1)
+        let int = parseInt(idx)
+        setEightChangedColor(true)
+        socket.emit('eight-played', {color: 'blue', username, room, nextTurnIndex, deck, hand, int, users })
+        setEightModalOpen(false)
+    }
+
+    const handleGreen = () => {
+        let username = props.user.username
+        let nextTurnIndex = getNextTurnIndex(currentTurnIndex)
+        let idx = eightId.substring(eightId.length - 1)
+        let int = parseInt(idx)
+        setEightChangedColor(true)
+        socket.emit('eight-played', {color: 'green', username, room, nextTurnIndex, deck, hand, int, users })
+        setEightModalOpen(false)
+    }
+
+    const handleOrange = () => {
+        let username = props.user.username
+        let nextTurnIndex = getNextTurnIndex(currentTurnIndex)
+        let idx = eightId.substring(eightId.length - 1)
+        let int = parseInt(idx)
+        setEightChangedColor(true)
+        socket.emit('eight-played', {color: 'orange', username, room, nextTurnIndex, deck, hand, int, users })
+        setEightModalOpen(false)
+    }
+
+    const handleRed = () => {
+        let username = props.user.username
+        let nextTurnIndex = getNextTurnIndex(currentTurnIndex)
+        let idx = eightId.substring(eightId.length - 1)
+        let int = parseInt(idx)
+        setEightChangedColor(true)
+        socket.emit('eight-played', {color: 'red', username, room, nextTurnIndex, deck, hand, int, users })
+        setEightModalOpen(false)
     }
 
     useEffect(() => {
@@ -203,6 +259,11 @@ const CrazyMain = props => {
             }
             setNewCard(obj)
             setCurrentTurnIndex(data.nextTurnIndex)
+            setLastMove({
+                player: data.username,
+                cardPlayed: obj,
+                turnTo: data.users[data.nextTurnIndex].username
+            })
         })
 
         socket.on('update-users-hand', (data) => {
@@ -213,6 +274,14 @@ const CrazyMain = props => {
             }
         })
     }, [currentTurnIndex])
+
+    function useEight(){
+
+    }
+
+    function reverseOrder(){
+
+    }
 
     function getNextTurnIndex(current){
         let retval;
@@ -236,6 +305,16 @@ const CrazyMain = props => {
     }
 
     //state mutators
+    const showEightModal = () => {
+        console.log('foo')
+        if(eightModalOpen){
+            setEightModalOpen(false)
+        }
+        else{
+            setEightModalOpen(true)
+        }
+    }
+
     const chatToggle = () => {
         setIsChatOpen(!isChatOpen)
         setChatIcon(!chatIcon)
@@ -369,7 +448,14 @@ const CrazyMain = props => {
                         currentTurnIndex={currentTurnIndex}
                         playDirection={playDirection}
                         playCard={playCard}
+                        playSpecialCard={playSpecialCard}
                         newCard={newCard}
+                        eightModalOpen={eightModalOpen}
+                        showEightModal={showEightModal}
+                        handleBlue={handleBlue}
+                        handleOrange={handleOrange}
+                        handleRed={handleRed}
+                        handleGreen={handleGreen}
                     />
                 </Paper>
             </div>

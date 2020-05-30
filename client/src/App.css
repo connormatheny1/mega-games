@@ -1,5 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap');
 body{
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     margin: 0;
   }
   
@@ -958,6 +959,7 @@ body{
     height: 30%;
     justify-content: space-between;
     align-items: center;
+    position: relative;
   }
 
   .your-cards-2{
@@ -1161,6 +1163,7 @@ body{
   .me .wins span{
     width: 90px;
     text-align: left;
+    font-size: 12px;
   }
 
   .wins span{
@@ -1198,6 +1201,49 @@ body{
 
   .your-cards-2-cont .unplayable{
     opacity: .6;
+  }
+
+  .eight-modal{
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 450px;
+    height: 280px;
+    position: absolute;
+    z-index: 300;
+    top: -80%;
+    padding: 0;
+    box-sizing: border-box;
+    border: 1px solid #555;
+    border-radius: 4px;
+    font-weight: 400;
+  }
+
+  .eight{
+    width: 50%;
+    height: 100%;
+    color: white;
+    text-transform: uppercase;
+    font-weight: 100;
+    cursor: pointer;
+  }
+
+  .eight-modal-header{
+    height: 30px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+
+  .eight-modal h4{
+    height: 30px;
+    width: 100%;
+    padding: 5px;
+    
   }
   
   /*HELPERS*/
@@ -1250,6 +1296,15 @@ body{
   .f-g-1{
     flex-grow: 1;
   }
+  
+  /*BORDER RADII*/
+  .bbl-r-2{
+    border-bottom-left-radius: 2px;
+  }
+
+  .bbr-r-2{
+    border-bottom-right-radius: 2px;
+  }
 
   /*HEIGHT*/
   .h-100{
@@ -1258,6 +1313,10 @@ body{
 
   .h-100.important{
     height: 100%!important;
+  }
+
+  .h-50{
+    height: 50%;
   }
 
   /*WIDTH*/
